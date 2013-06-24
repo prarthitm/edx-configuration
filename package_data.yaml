@@ -183,15 +183,7 @@ post_checkout_regex: !!omap
         export RUN="sudo -E -u www-data env SERVICE_VARIANT=$LMS_VARIANT PATH=$PATH"
         cd /opt/wwc/edx-platform
 
-        # If we're gather_assets is available, run it (to compile coffee and sass, and then collectstatic)
-        if $(rake -T | grep --quiet gather_assets); then
-          $RUN rake lms:gather_assets:aws
-          # Otherwise, we're still using django pipeline, so just run collectstatic [TODO: Remove this clause when gather_assets gets to prod]
-          elif $($RUN django-admin.py help collectstatic --pythonpath=/opt/wwc/edx-platform --settings=lms.envs.aws &>/dev/null); then
-          $RUN django-admin.py collectstatic \
-          --pythonpath=/opt/wwc/edx-platform --settings=lms.envs.aws \
-          --noinput --verbosity=0
-        fi
+        $RUN rake lms:gather_assets:aws
       fi
     - |
       # On servers running the workers, which run from the same cloned
@@ -214,15 +206,9 @@ post_checkout_regex: !!omap
         eval "$(rbenv init -)"
         export RUN="sudo -E -u www-data env SERVICE_VARIANT=cms PATH=$PATH"
         cd /opt/wwc/edx-platform
-        # If we're gather_assets is available, run it (to compile coffee and sass, and then collectstatic)
-        if $(rake -T | grep --quiet gather_assets); then
-          $RUN rake cms:gather_assets:aws
-          # Otherwise, we're still using django pipeline, so just run collectstatic [TODO: Remove this clause when gather_assets gets to prod]
-          elif $($RUN django-admin.py help collectstatic --pythonpath=/opt/wwc/edx-platform --settings=cms.envs.aws &>/dev/null) && [[ -r /opt/wwc/cms.auth.json ]]; then
-          $RUN django-admin.py collectstatic \
-          --pythonpath=/opt/wwc/edx-platform --settings=cms.envs.aws \
-          --noinput --verbosity=0
-        fi
+
+        $RUN rake cms:gather_assets:aws
+
         if $($RUN django-admin.py help update_templates --pythonpath=/opt/wwc/edx-platform --settings=cms.envs.aws &>/dev/null) && [[ -r /opt/wwc/cms.auth.json ]]; then
           $RUN django-admin.py update_templates \
           --pythonpath=/opt/wwc/edx-platform --settings=cms.envs.aws
