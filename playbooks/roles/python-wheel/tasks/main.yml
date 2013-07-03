@@ -1,0 +1,45 @@
+---
+# This will prime a virtualenv with pre-compiled
+# packages from a wheel tar archive
+#
+# Parameters:
+#   - wheel_archive: name of the wheel archive (ex: edx-platform)
+#   - wheel_archive_url: full url to tar file that has wheel files
+#   - wheel_virtualenv: virtualenv to populate
+#
+# Will install a bleeding edge version of pip and setuptools
+
+
+- name: Download setuptools
+  get_url: >
+    url=https://bitbucket.org/pypa/setuptools/downloads/setuptools-0.8b5.tar.gz  
+    force=no 
+    dest=/var/tmp/setuptools-0.8b5.tar.gz
+- name: Download wheel archive
+  get_url: >
+    url={{ wheel_archive_url }}
+    force=no
+    dest=/var/tmp/{{ wheel_archive}}.tar
+- name: Unpack setuptools
+  shell: tar xf setuptools-0.8b5.tar.gz creates=/var/tmp/setuptools-0.8b5 chdir=/var/tmp
+- name: Unpack wheel archive
+  shell: tar xf {{ wheel_archive }}.tar creates=/var/tmp/{{ wheel_archive }} chdir=/var/tmp
+
+- name: install dev version of pip
+  shell: "{{wheel_virtualenv}}/bin/pip install --upgrade git+https://github.com/pypa/pip"
+- name: remove setuptools
+  shell: "{{wheel_virtualenv}}/bin/pip uninstall -y setuptools"
+- name: install dev version of setuptools
+  shell: "{{wheel_virtualenv}}/bin/python /var/tmp/setuptools-0.8b5/setup.py install"
+- name: install dev version of wheel
+  shell: "{{wheel_virtualenv}}/bin/pip install --pre wheel"
+- name: install packages from wheel archive
+  shell: "{{wheel_virtualenv}}/bin/pip install --use-wheel --find-links=/var/tmp/{{ wheel_archive }}  --no-index -r {{ wheel_requirements }}"
+
+#- name: uninstall wheel
+#  shell: "{{wheel_virtualenv}}/bin/pip uninstall -y wheel"
+#- name: revert pip to a stable version
+#  shell: "{{wheel_virtualenv}}/bin/pip install --force-reinstall pip=={{ wheel_pip_stable_version }}"
+#- name: revert setuptools to a stable version
+#  shell: "{{wheel_virtualenv}}/bin/pip install --force-reinstall setuptools=={{ setuptools_stable_version }}"
+
