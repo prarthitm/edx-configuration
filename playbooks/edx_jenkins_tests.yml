@@ -13,10 +13,15 @@
     - "{{ secure_dir }}/vars/edx_jenkins_tests.yml"
   roles:
     - common
+    - { role: python-wheel, 
+        wheel_archive_url: "https://s3.amazonaws.com/python-wheel/edx-platform.tar", 
+        wheel_archive: "edx-platform", 
+        wheel_virtualenv: "{{venv_dir}}",
+        wheel_requirements: "{{edx_platform_code_dir}}/requirements/edx/wheel.txt" }
     - nginx
     - edxlocal
     - edxapp
-    - xqueue
-    - xserver
-    - ora
-    - rabbitmq
+#    - xqueue
+#    - xserver
+#    - ora
+#    - rabbitmq
