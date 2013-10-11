@@ -2,7 +2,7 @@
 - hosts: tag_group_edxapp
   sudo: True
   vars_files:
-    - "{{ secure_dir }}/vars/dev/feanilsandbox.yml"
+    - "{{ secure_dir }}/vars/dev/{{CLOUDFORMATION_STACK_NAME}}.yml"
     - "{{ secure_dir }}/vars/common/common.yml"
     - "{{ secure_dir }}/vars/users.yml"
   roles:
@@ -16,7 +16,7 @@
 - hosts: tag_group_worker
   sudo: True
   vars_files:
-    - "{{ secure_dir }}/vars/dev/feanilsandbox.yml"
+    - "{{ secure_dir }}/vars/dev/{{CLOUDFORMATION_STACK_NAME}}.yml"
     - "{{ secure_dir }}/vars/common/common.yml"
     - "{{ secure_dir }}/vars/users.yml"
   roles:
@@ -31,7 +31,7 @@
 - hosts: tag_group_xserver
   sudo: True
   vars_files:
-    - "{{ secure_dir }}/vars/dev/feanilsandbox.yml"
+    - "{{ secure_dir }}/vars/dev/{{CLOUDFORMATION_STACK_NAME}}.yml"
     - "{{ secure_dir }}/vars/users.yml"
   roles:
     - common
@@ -42,7 +42,7 @@
   serial: 1
   sudo: True
   vars_files:
-    - "{{ secure_dir }}/vars/dev/feanilsandbox.yml"
+    - "{{ secure_dir }}/vars/dev/{{CLOUDFORMATION_STACK_NAME}}.yml"
     - "{{ secure_dir }}/vars/users.yml"
   roles:
     - common
@@ -51,7 +51,7 @@
 - hosts: tag_group_xqueue
   sudo: True
   vars_files:
-    - "{{ secure_dir }}/vars/dev/feanilsandbox.yml"
+    - "{{ secure_dir }}/vars/dev/{{CLOUDFORMATION_STACK_NAME}}.yml"
     - "{{ secure_dir }}/vars/users.yml"
   roles:
     - common
