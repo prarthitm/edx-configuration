@@ -13,21 +13,21 @@
 #      edxapp_lms_env: 'lms.envs.load_test'
 #      edx_platform_commit: 'release'
 #    - splunkforwarder
-- hosts: tag_group_worker
-  sudo: True
-  vars_files:
-    - "{{ secure_dir }}/vars/dev/{{CLOUDFORMATION_STACK_NAME}}.yml"
-    - "{{ secure_dir }}/vars/common/common.yml"
-    - "{{ secure_dir }}/vars/users.yml"
-  roles:
-    - common
-    - datadog
-    - nginx
-    - role: 'edxapp'
-      edxapp_lms_env: 'lms.envs.load_test'
-      celery_worker: True
-      edx_platform_commit: 'release'
-    - splunkforwarder
+#- hosts: tag_group_worker
+#  sudo: True
+#  vars_files:
+#    - "{{ secure_dir }}/vars/dev/{{CLOUDFORMATION_STACK_NAME}}.yml"
+#    - "{{ secure_dir }}/vars/common/common.yml"
+#    - "{{ secure_dir }}/vars/users.yml"
+#  roles:
+#    - common
+#    - datadog
+#    - nginx
+#    - role: 'edxapp'
+#      edxapp_lms_env: 'lms.envs.load_test'
+#      celery_worker: True
+#      edx_platform_commit: 'release'
+#    - splunkforwarder
 - hosts: tag_group_xserver
   sudo: True
   vars_files:
