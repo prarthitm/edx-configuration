@@ -9,7 +9,11 @@
   roles:
     - common
     - datadog
-    - nginx
+    - role: nginx
+      nginx_sites:
+      - lms
+      - cms
+      - lms-preview
     - role: 'edxapp'
       edxapp_lms_env: 'lms.envs.load_test'
       edx_platform_commit: 'release'
@@ -23,7 +27,11 @@
   roles:
     - common
     - datadog
-    - nginx
+    - role: nginx
+      nginx_sites:
+      - lms
+      - cms
+      - lms-preview
     - role: 'edxapp'
       edxapp_lms_env: 'lms.envs.load_test'
       celery_worker: True
