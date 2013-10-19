@@ -42,6 +42,7 @@
     dest="{{ forum_home }}/.bashrc"
     regexp='. {{ forum_home }}/forum_env'    
     line='. {{ forum_home }}/forum_env'
+  sudo_user: "{{ forum_user }}"
   notify: 
     - forum | restart the forum service
   tags:
