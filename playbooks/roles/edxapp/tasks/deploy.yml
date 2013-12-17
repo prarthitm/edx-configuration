@@ -237,7 +237,7 @@
     config={{ supervisor_cfg }}
     name="edxapp:{{ item }}"
   sudo_user: "{{ supervisor_service_user }}"
-  when: celery_worker is not defined and not devstack
+  when: celery_worker is not defined and not devstack and startapp
   with_items: service_variants_enabled
   tags: deploy
 
@@ -247,7 +247,7 @@
     supervisorctl_path={{ supervisor_ctl }}
     config={{ supervisor_cfg }}
     state=started
-  when: celery_worker is defined and not devstack
+  when: celery_worker is defined and not devstack and startapp
   with_items: edxapp_workers
   sudo_user: "{{ supervisor_service_user }}"
   tags: deploy

@@ -8,3 +8,4 @@
   - xqueue
   - xqueue_consumer
   tags: deploy
+  when: startapp

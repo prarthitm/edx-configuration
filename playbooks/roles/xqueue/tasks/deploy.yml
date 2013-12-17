@@ -80,6 +80,7 @@
   shell:  "{{ supervisor_ctl }} -c {{ supervisor_cfg }} update"
   register: supervisor_update
   changed_when: supervisor_update.stdout != ""
+  when: startapp
   tags: deploy
 
 - name: xqueue | ensure xqueue, consumer is running
