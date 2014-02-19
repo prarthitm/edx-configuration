@@ -120,6 +120,15 @@ def parse_args():
     parser.add_argument('--noop', action='store_true',
                         help="don't actually run the cmds",
                         default=False)
+    parser.add_argument('--fake-migrations', action='store_true',
+                        help="do fake migrations instead of real ones",
+                        default=False)
+    parser.add_argument('--no-vpc', action='store_true',
+                        help="don't attempt to launch an instance in a vpc",
+                        default=False)
+    parser.add_argument('--no-ami', action='store_true',
+                        help="don't create an AMI at the end of instance launch",
+                        default=False)
     parser.add_argument('--secure-vars', required=False,
                         metavar="SECURE_VAR_FILE",
                         help="path to secure-vars from the root of "
@@ -132,6 +141,10 @@ def parse_args():
     parser.add_argument('-p', '--play',
                         help='play name without the yml extension',
                         metavar="PLAY", required=True)
+    parser.add_argument('--security-group',
+                        help='security group to use for the instance',
+                        default=None)
+
     parser.add_argument('-d', '--deployment', metavar="DEPLOYMENT",
                         required=True)
     parser.add_argument('-e', '--environment', metavar="ENVIRONMENT",
@@ -198,25 +211,34 @@ def parse_args():
     return parser.parse_args()
 
 
-def get_instance_sec_group(vpc_id):
+def _get_instance_sec_group(security_group, vpc_id, play):
 
-    security_group_id = None
-
-    grp_details = ec2.get_all_security_groups(
-        filters={
-            'vpc_id':vpc_id,
-            'tag:play': args.play
-        }
-    )
+    if not security_group:
+        grp_details = ec2.get_all_security_groups(
+            filters={
+                'vpc_id': vpc_id,
+                'tag:play': args.play
+            }
+        )
+    else:
+        grp_details = ec2.get_all_security_groups(groupnames=[security_group])
 
     if len(grp_details) < 1:
-        sys.stderr.write("ERROR: Expected atleast one security group, got {}\n".format(
-            len(grp_details)))
+        raise Exception(
+            "ERROR: Expected atleast one security group, got {}\n".format(
+                len(grp_details)))
 
     return grp_details[0].id
 
 
-def create_instance_args():
+def create_instance_args(
+        stack_name,
+        play, identity, configuration_version, configuration_secure_version,
+        configuration_secure_repo, environment, deployment,
+        role_name, keypair, base_ami, instance_type,
+        fake_migrations,
+        vpc=False,
+        security_group=None):
     """
     Looks up security group, subnet
     and returns arguments to pass into
@@ -224,24 +246,33 @@ def create_instance_args():
     user data
     """
 
-    vpc = VPCConnection()
-    subnet = vpc.get_all_subnets(
-        filters={
-            'tag:aws:cloudformation:stack-name': stack_name,
-            'tag:play': args.play}
-    )
-    if len(subnet) < 1:
-        sys.stderr.write("ERROR: Expected at least one subnet, got {}\n".format(
-            len(subnet)))
-        sys.exit(1)
-    subnet_id = subnet[0].id
-    vpc_id = subnet[0].vpc_id
+    # Only lookup the subnet id and
+    # the vpc id if we are launching
+    # an instance into a vpc
 
-    security_group_id = get_instance_sec_group(vpc_id)
+    subnet_id = None
+    vpc_id = None
 
-    if args.identity:
+    if vpc:
+        vpc = VPCConnection()
+        subnet = vpc.get_all_subnets(
+            filters={
+                'tag:aws:cloudformation:stack-name': stack_name,
+                'tag:play': play}
+        )
+        if len(subnet) < 1:
+            sys.stderr.write(
+                "ERROR: Expected at least one subnet, got {}\n".format(
+                    len(subnet)))
+            sys.exit(1)
+        subnet_id = subnet[0].id
+        vpc_id = subnet[0].vpc_id
+
+    security_group_id = _get_instance_sec_group(security_group, vpc_id, play)
+
+    if identity:
         config_secure = 'true'
-        with open(args.identity) as f:
+        with open(identity) as f:
             identity_file = f.read()
     else:
         config_secure = 'false'
@@ -340,7 +371,7 @@ EDXAPP_LOCAL_GIT_IDENTITY: $secure_identity
 # abbey will always run fake migrations
 # this is so that the application can come
 # up healthy
-fake_migrations: true
+fake_migrations: {fake_migrations}
 EOF
 
 chmod 400 $secure_identity
@@ -368,28 +399,29 @@ ansible-playbook -vvvv -c local -i "localhost," stop_all_edx_services.yml -e@$ex
 rm -rf $base_dir
 
     """.format(
-                configuration_version=args.configuration_version,
-                configuration_secure_version=args.configuration_secure_version,
-                configuration_secure_repo=args.configuration_secure_repo,
+                configuration_version=configuration_version,
+                configuration_secure_version=configuration_secure_version,
+                configuration_secure_repo=configuration_secure_repo,
                 configuration_secure_repo_basename=os.path.basename(
-                    args.configuration_secure_repo),
-                environment=args.environment,
-                deployment=args.deployment,
-                play=args.play,
+                    configuration_secure_repo),
+                environment=environment,
+                deployment=deployment,
+                play=play,
                 config_secure=config_secure,
                 identity_file=identity_file,
                 queue_name=run_id,
                 extra_vars_yml=extra_vars_yml,
                 git_refs_yml=git_refs_yml,
-                secure_vars=secure_vars)
+                secure_vars=secure_vars,
+                fake_migrations=fake_migrations)
 
     ec2_args = {
         'security_group_ids': [security_group_id],
         'subnet_id': subnet_id,
-        'key_name': args.keypair,
-        'image_id': args.base_ami,
-        'instance_type': args.instance_type,
-        'instance_profile_name': args.role_name,
+        'key_name': keypair,
+        'image_id': base_ami,
+        'instance_type': instance_type,
+        'instance_profile_name': role_name,
         'user_data': user_data,
 
     }
@@ -446,7 +478,8 @@ def poll_sqs_ansible():
         now = int(time.time())
         if buf:
             try:
-                if (now - max([msg['recv_ts'] for msg in buf])) > args.msg_delay:
+                if (now - max(
+                        [msg['recv_ts'] for msg in buf])) > args.msg_delay:
                     # sort by TS instead of recv_ts
                     # because the sqs timestamp is not as
                     # accurate
@@ -542,7 +575,7 @@ def create_ami(instance_id, name, description):
     return image_id
 
 
-def launch_and_configure(ec2_args):
+def launch_and_configure(ec2_args, no_ami):
     """
     Creates an sqs queue, launches an ec2 instance,
     configures it and creates an AMI. Polls
@@ -617,12 +650,13 @@ def launch_and_configure(ec2_args):
 
     print "{:<40}".format("Creating AMI:"),
     ami_start = time.time()
-    ami = create_ami(instance_id, run_id, run_id)
-    ami_delta = time.time() - ami_start
-    print "[ OK ] {:0>2.0f}:{:0>2.0f}".format(
-        ami_delta / 60,
-        ami_delta % 60)
-    run_summary.append(('AMI Build', ami_delta))
+    if not no_ami:
+        ami = create_ami(instance_id, run_id, run_id)
+        ami_delta = time.time() - ami_start
+        print "[ OK ] {:0>2.0f}:{:0>2.0f}".format(
+            ami_delta / 60,
+            ami_delta % 60)
+        run_summary.append(('AMI Build', ami_delta))
     total_time = time.time() - start_time
     all_stages = sum(run[1] for run in run_summary)
     if total_time - all_stages > 0:
@@ -682,7 +716,13 @@ if __name__ == '__main__':
         run_id = "abbey-{}-{}-{}".format(
             args.environment, args.deployment, int(time.time() * 100))
 
-        ec2_args = create_instance_args()
+        ec2_args = create_instance_args(
+            stack_name,
+            args.play, args.identity, args.configuration_version,
+            args.configuration_secure_version,
+            args.configuration_secure_repo,
+            args.environment, args.deployment,
+            args.role_name, args.keypair, args.base_ami, args.instance_type)
 
         if args.noop:
             print "Would have created sqs_queue with id: {}\nec2_args:".format(
@@ -690,7 +730,7 @@ if __name__ == '__main__':
             pprint(ec2_args)
             ami = "ami-00000"
         else:
-            run_summary, ami = launch_and_configure(ec2_args)
+            run_summary, ami = launch_and_configure(ec2_args, args.no_ami)
             print
             print "Summary:\n"
 
