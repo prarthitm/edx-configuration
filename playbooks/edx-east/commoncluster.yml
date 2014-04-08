@@ -2,11 +2,12 @@
 
 - hosts: all
   sudo: True
-  serial: 1
+  serial: "{{ serial_var }}"
   vars:
     ENABLE_DATADOG: False
     ENABLE_SPLUNKFORWARDER: False
     ENABLE_NEWRELIC: False
+    serial_var: 1
   roles:
     - aws
     - role: nginx
