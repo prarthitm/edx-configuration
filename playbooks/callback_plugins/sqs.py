@@ -125,8 +125,9 @@ class CallbackModule(object):
                     if output in payload[msg_type]:
                         # only keep the last 1000 characters
                         # of stderr and stdout
+                        print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> {} *** {}".format(len(payload[msg_type][output]), payload[msg_type][output])
                         if len(payload[msg_type][output]) > 1000:
                             payload[msg_type][output] = "(clipping) ... " \
                                     + payload[msg_type][output][-1000:]
-
+            print "<<< sending payload >>> {}".format(payload)
             self.sqs.send_message(self.queue, json.dumps(payload))
