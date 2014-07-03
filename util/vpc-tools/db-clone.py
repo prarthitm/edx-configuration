@@ -115,27 +115,9 @@ if __name__ == '__main__':
     restore_dbid = 'from-prod-edx-2014-07-02-1404332265'
     db_host = rds.describe_db_instances(restore_dbid)['DescribeDBInstancesResponse']['DescribeDBInstancesResult']['DBInstances'][0]['Endpoint']['Address']
 
-    if args.clean_wwc:
-        # Run the mysql clean sql file
-        sanitize_cmd = """mysql -u root -p{root_pass} -h{db_host} wwc < {sanitize_wwc_sql_file} """.format(
-            root_pass=args.password,
-            db_host=db_host,
-            sanitize_wwc_sql_file=sanitize_wwc_sql_file)
-        print("Running {}".format(sanitize_cmd))
-        os.system(sanitize_cmd)
-
-    if args.clean_prod_grader:
-        # Run the mysql clean sql file
-        sanitize_cmd = """mysql -u root -p{root_pass} -h{db_host} prod_grader < {sanitize_prod_grader_sql_file} """.format(
-            root_pass=args.password,
-            db_host=db_host,
-            sanitize_prod_grader_sql_file=sanitize_prod_grader_sql_file)
-        print("Running {}".format(sanitize_cmd))
-        os.system(sanitize_cmd)
-
     if args.secret_var_file:
         db_cmd = """cd {play_path} && ansible-playbook -c local -i 127.0.0.1, update_edxapp_db_users.yml """ \
-            """-e @{secret_var_file} -e "edxapp_db_root_user=root edxapp_db_root_pass={root_pass} """ \
+            """-e @/var/lib/jenkins/jobs/clone-prod-rds-outside-vpc/workspace/configuration-secure/ansible/vars/edx.yml -e @/var/lib/jenkins/jobs/clone-prod-rds-outside-vpc/workspace/configuration-secure/ansible/vars/stage-edx.yml -e "edxapp_db_root_user=root edxapp_db_root_pass={root_pass} """ \
             """EDXAPP_MYSQL_HOST={db_host}" """.format(
             root_pass=args.password,
             secret_var_file=args.secret_var_file,
