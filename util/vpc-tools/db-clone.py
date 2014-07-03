@@ -152,3 +152,6 @@ if __name__ == '__main__':
             db_host=db_host)
         print("Running {}".format(dns_cmd))
         os.system(dns_cmd)
+
+    if args.stack_name:
+        rds.modify_db_instance(restore_dbid, vpc_security_group_ids=[SG_GROUPS[args.stack_name]])
