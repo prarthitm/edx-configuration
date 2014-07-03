@@ -112,37 +112,8 @@ if __name__ == '__main__':
     play_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../playbooks/edx-east")
 
     rds = boto.rds2.connect_to_region(args.region)
-    restore_dbid = 'from-{0}-{1}-{2}'.format(args.db_source, datetime.date.today(), int(time.time()))
-    restore_args = dict(
-        source_db_instance_identifier=args.db_source,
-        target_db_instance_identifier=restore_dbid,
-        use_latest_restorable_time=True,
-        db_instance_class=args.type,
-    )
-    if args.stack_name:
-        subnet_name = rds_subnet_group_name_for_stack_name(args.stack_name)
-        restore_args['db_subnet_group_name'] = subnet_name
-    rds.restore_db_instance_to_point_in_time(**restore_args)
-    wait_on_db_status(restore_dbid)
-
+    restore_dbid = 'from-prod-edx-2014-07-02-1404332265'
     db_host = rds.describe_db_instances(restore_dbid)['DescribeDBInstancesResponse']['DescribeDBInstancesResult']['DBInstances'][0]['Endpoint']['Address']
-
-    if args.password or args.stack_name:
-        modify_args = dict(
-            apply_immediately=True
-        )
-        if args.password:
-            modify_args['master_user_password'] = args.password
-        if args.stack_name:
-            modify_args['vpc_security_group_ids'] = [SG_GROUPS[args.stack_name], SG_GROUPS_FULL[args.stack_name]]
-        else:
-            # dev-edx is the default security group for dbs that
-            # are not in the vpc, it allows connections from the various
-            # NAT boxes and from sandboxes
-            modify_args['db_security_groups'] = ['dev-edx']
-
-        # Update the db immediately
-        rds.modify_db_instance(restore_dbid, **modify_args)
 
     if args.clean_wwc:
         # Run the mysql clean sql file
@@ -181,6 +152,3 @@ if __name__ == '__main__':
             db_host=db_host)
         print("Running {}".format(dns_cmd))
         os.system(dns_cmd)
-
-    if args.stack_name:
-        rds.modify_db_instance(restore_dbid, vpc_security_group_ids=[SG_GROUPS[args.stack_name]])
