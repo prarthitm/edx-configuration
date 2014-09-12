@@ -10,6 +10,7 @@
     EDX_ANSIBLE_DUMP_VARS: true
     CERTS_DOWNLOAD_URL: 'http://192.168.33.10:18090'
     CERTS_VERIFY_URL: 'http://192.168.33.10:18090'
+    ENABLE_LEGACY_ORA: !!null
   vars_files:
     - "group_vars/all"
   roles:
@@ -36,7 +37,8 @@
     - elasticsearch
     - forum
     - { role: "xqueue", update_users: True }
-    - ora
+    - role: ora
+      when: ENABLE_LEGACY_ORA
     - certs
     - role: analytics-api
       when: ANALYTICS_API_GIT_IDENTITY
