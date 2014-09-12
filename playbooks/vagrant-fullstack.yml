@@ -36,6 +36,9 @@
     - oraclejdk
     - elasticsearch
     - forum
+    - notifier
+    - xqwatcher
+    - xserver
     - { role: "xqueue", update_users: True }
     - role: ora
       when: ENABLE_LEGACY_ORA
