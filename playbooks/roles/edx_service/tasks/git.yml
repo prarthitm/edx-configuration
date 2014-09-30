@@ -1,0 +1,33 @@
+---
+
+- name: create .ssh directory
+  file: >
+    path="{{ service_dirs.service_home.path }}/.ssh" mode=2700
+    state=directory owner={{ edx_service_name }} group={{ edx_service_name }}
+
+- name: create ssh script for git (not authenticated)
+  template: >
+    src=tmp/git_ssh_noauth.sh.j2 dest={{ service_git_ssh }}
+    owner={{ edx_service_name }} mode=750
+    
+- name: install read-only ssh key
+  copy: >
+    content="{{ COMMON_GIT_IDENTITY }}" dest={{ service_git_identity_file }}
+    owner={{ edx_service_name }} group={{ edx_service_name }} mode=0600
+
+- name: checkout code
+  git: >
+    dest={{ item.value.dest }} repo={{ item.value.repo }} version={{ item.value.version }}
+    accept_hostkey=yes
+  register: service_code_checkout
+  #notify: restart insights
+  sudo_user: "{{ edx_service_name }}"
+  environment:
+    GIT_SSH: "{{ service_git_ssh }}"
+  with_dict: edx_service_repos
+    
+- name: remove read-only ssh key for the content repo
+  file: path={{ insights_git_identity_file }} state=absent
+
+- include: tag_ec2.yml tags=deploy
+  when: COMMON_TAG_EC2_INSTANCE

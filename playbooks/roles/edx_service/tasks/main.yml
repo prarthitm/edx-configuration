@@ -34,35 +34,13 @@
     createhome=no
     shell=/bin/false
 
-- name: create edx_service app and venv dir
+- name: create all service directories
   file: >
-    path="{{ item }}"
-    state=directory
-    owner="{{ edx_service_name }}"
-    group="{{ common_web_group }}"
-  with_items:
-    - "{{ COMMON_APP_DIR }}/{{ edx_service_name }}"
-    - "{{ COMMON_APP_DIR }}/{{ edx_service_name }}/venvs"
-
-- name: create edx_service data and staticfiles dir
-  file: >
-    path="{{ item }}"
-    state=directory
-    owner="{{ edx_service_name }}"
-    group="{{ common_web_group }}"
-  with_items:
-    - "{{ COMMON_DATA_DIR }}/{{ edx_service_name }}/data"
-    - "{{ COMMON_DATA_DIR }}/{{ edx_service_name }}/staticfiles"
-
-
-- name: create edx_service log dir
-  file: >
-    path="{{ item }}"
-    state=directory
-    owner="syslog"
-    group="syslog"
-  with_items:
-    - "{{ COMMON_LOG_DIR }}/{{ edx_service_name }}"
+    path="{{ item.value.path }}"
+    state="directory"
+    owner="{{ item.value.owner }}"
+    group="{{ item.value.group }}"
+  with_dict: service_dirs
 
 # Replace dashes with underscores to support roles that use
 # dashes (the role vars will contain underscores)
@@ -75,3 +53,5 @@
   yum: pkg={{ item }} state=present
   with_items: "{{ edx_service_name.replace('-', '_') }}_redhat_pkgs"
   when: ansible_distribution in common_redhat_variants
+
+- include: git.yml

@@ -16,6 +16,36 @@
 #
 edx_service_role_name: edx_service
 
+service_dirs:
+  inventory:
+    path: "{{ COMMON_CFG_DIR }}/inventory.d"
+    owner: "root"
+    group: "root"
+  service_home:
+    path:  "{{ COMMON_APP_DIR }}/{{ edx_service_name }}"
+    owner: "{{ edx_service_name }}"
+    group: "{{ common_web_group }}"
+  service_venv:
+    path: "{{ COMMON_APP_DIR }}/{{ edx_service_name }}/venvs"
+    owner: "{{ edx_service_name }}"
+    group: "{{ common_web_group }}"
+  service_data:
+    path: "{{ COMMON_DATA_DIR }}/{{ edx_service_name }}/data"
+    owner: "{{ edx_service_name }}"
+    group: "{{ common_web_group }}"
+  service_staticfiles:
+    path: "{{ COMMON_DATA_DIR }}/{{ edx_service_name }}/staticfiles"
+    owner: "{{ edx_service_name }}"
+    group: "{{ common_web_group }}"
+  service_logs:
+    path: "{{ COMMON_LOG_DIR }}/{{ edx_service_name }}"
+    owner: "syslog"
+    group: "syslog"
+
+
+service_git_ssh: "/tmp/git.ssh"
+service_git_identity_file: "/tmp/git_identity"
+    
 #
 # OS packages
 #

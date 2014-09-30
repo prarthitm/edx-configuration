@@ -1,0 +1,90 @@
+---
+
+- name: setup the service env file
+  template: >
+    src="edx/app/service/service_env.j2"
+    dest="{{ service_dirs.service_home.path }}/{{ edx_service_name }}_env"
+    owner={{ edx_service_name }}
+    group={{ edx_service_name }}
+    mode=0644
+
+- name: write out app config file
+  template: >
+    src=edx/app/service/service.yaml.j2
+    dest={{ COMMON_CFG_DIR  }}/{{ edx_service_name }}.yaml
+    mode=0644 owner={{ edx_service_name }} group={{ edx_service_name }}
+  #notify: restart insights
+
+- name: install application requirements
+  pip: >
+    requirements="{{ insights_requirements_base }}/{{ item }}"
+    virtualenv="{{ service_dirs.service_venv.path }}" state=present
+  sudo_user: "{{ edx_service_name }}"
+  #notify: restart insights
+  with_items: service_requirements
+  environment:
+    GIT_SSH: "{{ service_git_ssh }}"
+
+# - name: syncdb and migrate
+#   shell: >
+#     chdir={{ insights_code_dir }}
+#     DB_MIGRATION_USER={{ COMMON_MYSQL_MIGRATE_USER }}
+#     DB_MIGRATION_PASS={{ COMMON_MYSQL_MIGRATE_PASS }}
+#     {{ insights_venv_bin }}/python {{ insights_manage }} syncdb --migrate --noinput
+#   sudo_user: "{{ insights_user }}"
+#   environment: "{{ insights_environment }}"
+#   when: migrate_db is defined and migrate_db|lower == "yes"
+
+# - name: run collectstatic
+#   shell: >
+#     chdir={{ insights_code_dir }}
+#     {{ insights_venv_bin }}/python {{ insights_manage }} {{ item }}
+#   sudo_user: "{{ insights_user }}"
+#   environment: "{{ insights_environment }}"
+#   with_items:
+#     - "collectstatic --noinput"
+#     - "compress"
+
+- name: write out the supervisior wrapper
+  template: >
+    src=edx/app/insights/insights.sh.j2
+    dest={{ service_dirs.service_home.path }}/{{ edx_service_name }}.sh
+    mode=0650 owner={{ supervisor_user }} group={{ common_web_user }}
+  notify: restart insights
+
+- name: write supervisord config
+  template: >
+    src=edx/app/supervisor/conf.d.available/service.conf.j2
+    dest="{{ supervisor_available_dir }}/{{ edx_service_name }}.conf"
+    owner={{ supervisor_user }} group={{ common_web_user }} mode=0644
+  notify: restart insights
+
+- name: enable supervisor script
+  file: >
+    src={{ supervisor_available_dir }}/{{ edx_service_name }}.conf
+    dest={{ supervisor_cfg_dir }}/{{ edx_service_name }}.conf
+    state=link
+    force=yes
+  #notify: restart insights
+  when: not disable_edx_services
+
+- name: update supervisor configuration
+  shell: "{{ supervisor_ctl }} -c {{ supervisor_cfg }} update"
+  when: not disable_edx_services
+
+- name: create symlinks from the venv bin dir
+  file: >
+    src="{{ service_dirs.service_venv.path }}/{{ item }}"
+    dest="{{ COMMON_BIN_DIR }}/{{ item.split('.')[0] }}.{{ insights_role_name }}"
+    state=link
+  with_items:
+  - python
+  - pip
+  - django-admin.py
+
+# - name: create manage.py symlink
+#   file: >
+#     src="{{ insights_manage }}"
+#     dest="{{ COMMON_BIN_DIR }}/manage.{{ insights_role_name }}"
+#     state=link
+    
