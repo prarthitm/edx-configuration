@@ -1,3 +1,7 @@
+# Vagrant is the standard development environment for edX. This is a
+# virtual machine which approximately mirrors the way edX is
+# configured on a non-AWS stack in production.
+
 - name: Configure instance(s)
   hosts: all
   sudo: True

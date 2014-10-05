@@ -1,3 +1,12 @@
+# This is a playbook for ORA. 
+# 
+# ORA stands for Open Response Assessment. This is an edX-developed
+# component for grading of free-form responses, such as short answers
+# and essays. It integrates multiple techniques, including peer grading, 
+# self-assessment, and AI grading.
+# 
+# We should document whether this is ORA1 or ORA2. 
+
 - name: Deploy ora
   hosts: all
   sudo: True

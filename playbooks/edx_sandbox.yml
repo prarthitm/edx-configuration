@@ -1,3 +1,9 @@
+# The sandbox is a single-machine install on AWS. It is designed to
+# mostly mimick the deployed configuration, and is primarily designed 
+# for debugging/development purposes. When a new feature is built, 
+# developers will often bring up a new machine to test it on using 
+# this playbook.
+
 ---
 
 # Example sandbox configuration
