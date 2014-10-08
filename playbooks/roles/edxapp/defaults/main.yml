@@ -15,6 +15,10 @@
 # Variables set to "None" will be converted to None
 # when the edxapp config is written to disk.
 
+
+PIP_EXTRA_ARGS: '--exists-action w --use-wheel --no-index --find-links=http://edx-wheelhouse.s3-website-us-east-1.amazonaws.com/Ubuntu/precise/Python-2.7'
+
+
 # Bucket used for xblock file storage
 EDXAPP_XBLOCK_FS_STORAGE_BUCKET: "None"
 EDXAPP_XBLOCK_FS_STORAGE_PREFIX: "None"
