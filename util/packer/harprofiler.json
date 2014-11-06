@@ -35,5 +35,6 @@
       "echo '[jenkins_worker]' > inventory.ini",
       "echo 'localhost' >> inventory.ini",
       "ansible-playbook run_role.yml -i inventory.ini -c local -e role=harprofiler -vvvv"]
-  }]
+  }],
+  "post-processors": ["vagrant"]
 }
