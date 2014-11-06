@@ -11,7 +11,7 @@
     "secret_key": "{{user `aws_secret_key`}}",
     "region": "us-east-1",
     "source_ami": "{{user `ami`}}",
-    "instance_type": "m3.large",
+    "instance_type": "m1.small",
     "ssh_username": "ubuntu",
     "ami_name": "harprofiler-{{isotime | clean_ami_name}}"
   }],
