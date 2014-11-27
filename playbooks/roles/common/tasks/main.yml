@@ -136,4 +136,3 @@
   template: >
     dest=/etc/ssh/sshd_config
     src=sshd_config.j2 mode=0644 owner=root group=root
-  notify: restart ssh
