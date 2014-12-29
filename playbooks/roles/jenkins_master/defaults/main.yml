@@ -1,7 +1,7 @@
 jenkins_home: "{{ COMMON_DATA_DIR }}/jenkins"
 jenkins_user: "jenkins"
 jenkins_group: "edx"
-jenkins_server_name: "jenkins.testeng.edx.org"
+jenkins_server_name: "build.testeng.edx.org"
 jenkins_port: 8080
 
 jenkins_version: 1.594
@@ -76,23 +76,6 @@ jenkins_plugins:
 # Unknown
     # MapDB API Plugin
     # Script Security Plugin
-
-
-jenkins_bundled_plugins:
-    - "credentials"
-    - "git"
-    - "ssh-credentials"
-    - "ssh-slaves"
-
-jenkins_custom_plugins:
-    - { repo_name: "git-client-plugin",
-        repo_url: "https://github.com/edx/git-client-plugin.git",
-        package: "git-client.hpi",
-        version: "2f7fc4648fe7239918a7babd0515930d40d0a761" }
-    - { repo_name: "git-plugin",
-        repo_url: "https://github.com/edx/git-plugin.git",
-        package: "git.hpi",
-        version: "4dc0c5ce7d38855d0ab0d9cef9cd3325917d748b" }
 
 jenkins_debian_pkgs:
     - openjdk-7-jdk

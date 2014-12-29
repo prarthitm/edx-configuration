@@ -7,7 +7,7 @@
   sudo: True
   gather_facts: True
   vars:
-    COMMON_DATA_DIR: "/mnt"
+    COMMON_DATA_DIR: "/build"
     COMMON_ENABLE_DATADOG: True
   roles:
     - common
