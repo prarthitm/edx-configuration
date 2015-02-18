@@ -21,6 +21,12 @@
 #
 #
 
+
+#
+# Deal with Jumbo frames issue in mixed MTU deployements in AWS
+- lineinfile: dest=/etc/network/interfaces regexp=^mtu line="mtu 1500"
+- service: name=networking state=restarted
+  
 - name: create all service directories
   file: >
     path="{{ item.value.path }}"
