@@ -1,3 +1,9 @@
+{% if COMMON_ENABLE_NEWRELIC_APP -%}
+{% set nr_executable = edxapp_venv_dir + '/bin/newrelic-admin run-program ' + edxapp_venv_dir + '/bin/gunicorn' -%}
+{% else -%}
+{% set executable = edxapp_venv_dir + '/bin/gunicorn' -%}
+{% endif -%}
+
 {% for w in edxapp_workers %}
 [program:{{ w.service_variant }}_{{ w.queue }}_{{ w.concurrency }}]
 

@@ -386,24 +386,31 @@ EDXAPP_CELERY_WORKERS:
   - queue: low
     service_variant: cms
     concurrency: 3
+    monitoring: newrelic
   - queue: default
     service_variant: cms
     concurrency: 4
+    monitoring: newrelic
   - queue: high
     service_variant: cms
     concurrency: 1
+    monitoring: !!null
   - queue: low
     service_variant: lms
     concurrency: 1
+    monitoring: newrelic
   - queue: default
     service_variant: lms
     concurrency: 3
+    monitoring: newrelic
   - queue: high
     service_variant: lms
     concurrency: 4
+    monitoring: !!null
   - queue: high_mem
     service_variant: lms
     concurrency: 2
+    monitoring: !!null
 
 EDXAPP_DEFAULT_CACHE_VERSION: "1"
 EDXAPP_OAUTH_ENFORCE_SECURE: True
