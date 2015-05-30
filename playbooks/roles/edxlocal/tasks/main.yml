@@ -68,13 +68,108 @@
   when: item != None and item != ''
   with_items: "{{ edxlocal_databases }}"
 
+- name: setup the edxapp db user
+  mysql_user: >
+    name={{ EDXAPP_MYSQL_USER }}
+    password={{ EDXAPP_MYSQL_PASSWORD }}
+    priv='{{ EDXAPP_MYSQL_DB_NAME }}.*:ALL'
+  when: EDXAPP_MYSQL_USER is defined
+  tags:
+    - rdbms-users
+  
+- name: create a database for edxapp
+  mysql_db: >
+    db=edxapp
+    state=present
+    encoding=utf8
+  when: EDXAPP_MYSQL_USER is defined
+  tags:
+    - rdbms-schema
+  
+- name: setup the xqueue db user
+  mysql_user: >
+    name={{ XQUEUE_MYSQL_USER }}
+    password={{ XQUEUE_MYSQL_PASSWORD }}
+    priv='{{ XQUEUE_MYSQL_DB_NAME }}.*:ALL'
+  when: XQUEUE_MYSQL_USER is defined
+  tags:
+    - rdbms-users
+  
+- name: create a database for xqueue
+  mysql_db: >
+    db=xqueue
+    state=present
+    encoding=utf8
+  when: XQUEUE_MYSQL_USER is defined
+  tags:
+    - rdbms-schema
+  
+- name: setup the ora db user
+  mysql_user: >
+    name={{ ORA_MYSQL_USER }}
+    password={{ ORA_MYSQL_PASSWORD }}
+    priv='{{ ORA_MYSQL_DB_NAME }}.*:ALL'
+  when: ORA_MYSQL_USER is defined
+  tags:
+    - rdbms-users
+  
+- name: create a database for ora
+  mysql_db: >
+    db=ora
+    state=present
+    encoding=utf8
+  when: ORA_MYSQL_USER is defined
+  tags:
+    - rdbms-schema
+  
+- name: create databases for analytics api
+  mysql_db: >
+    db={{ item }}
+    state=present
+    encoding=utf8
+  when: ANALYTICS_API_SERVICE_CONFIG is defined
+  with_items:
+    - "{{ ANALYTICS_API_SERVICE_CONFIG['DATABASES']['default']['NAME'] }}"
+    - "{{ ANALYTICS_API_SERVICE_CONFIG['DATABASES']['reports']['NAME'] }}"
+  tags:
+    - rdbms-schema
+    
+- name: create database for insights
+  mysql_db: >
+    db={{ INSIGHTS_DATABASES.default.NAME }}
+    state=present
+    encoding=utf8
+  when: INSIGHTS_DATABASES is defined
+  tags:
+    - rdbms-schema
+  
+- name: create database for ecommerce
+  mysql_db: >
+    db="{{ ECOMMERCE_DEFAULT_DB_NAME }}"
+    state=present
+    encoding=utf8
+  when: ECOMMERCE_DEFAULT_DB_NAME is defined
+  tags:
+    - rdbms-schema
+  
+- name: setup users for ecommerce
+  mysql_user: >
+    name="{{ ECOMMERCE_DATABASES.default.USER }}"
+    password="{{ ECOMMERCE_DATABASES.default.PASSWORD }}"
+    priv='{{ ECOMMERCE_DEFAULT_DB_NAME }}.*:SELECT,INSERT,UPDATE,DELETE'
+  when: ECOMMERCE_DEFAULT_DB_NAME is defined
+  tags:
+    - rdbms-users
+  
 - name: create api user for the analytics api
   mysql_user: >
     name=api001
     password="{{ ANALYTICS_API_DATABASES.default.PASSWORD }}"
     priv='{{ ANALYTICS_API_DATABASES.default.NAME }}.*:ALL/reports.*:SELECT'
   when: ANALYTICS_API_SERVICE_CONFIG is defined
-
+  tags:
+    - rdbms-users
+  
 - name: create read-only reports user for the analytics-api
   mysql_user: >
     name=reports001
@@ -88,27 +183,61 @@
     state=present
     encoding=latin1
   when: HIVE_METASTORE_DATABASE is defined
-
+  tags:
+    - rdbms-users
+    
 - name: setup the edx-notes-api db user
   mysql_user: >
     name={{ EDX_NOTES_API_MYSQL_DB_USER }}
     password={{ EDX_NOTES_API_MYSQL_DB_PASS }}
     priv='{{ EDX_NOTES_API_MYSQL_DB_NAME }}.*:SELECT,INSERT,UPDATE,DELETE'
   when: EDX_NOTES_API_MYSQL_DB_USER is defined
-
-
+  tags:
+    - rdbms-users
+    
+- name: create a database for edx-notes-api
+  mysql_db: >
+    db={{ EDX_NOTES_API_MYSQL_DB_NAME }}
+    state=present
+    encoding=utf8
+  when: EDX_NOTES_API_MYSQL_DB_USER is defined
+  tags:
+    - rdbms-users
+    
+- name: setup the migration db user
+  mysql_user: >
+    name={{ COMMON_MYSQL_MIGRATE_USER }}
+    password={{ COMMON_MYSQL_MIGRATE_PASS }}
+    priv='{{ item }}.*:ALL'
+    append_privs=yes
+  when: item != 'None'
+  with_items:
+    - "{{ EDXAPP_MYSQL_DB_NAME|default('None') }}"
+    - "{{ XQUEUE_MYSQL_DB_NAME|default('None') }}"
+    - "{{ ORA_MYSQL_DB_NAME|default('None') }}"
+    - "{{ EDX_NOTES_API_MYSQL_DB_NAME|default('None') }}"
+    - "{{ ANALYTICS_API_DEFAULT_DB_NAME|default('None') }}"
+    - "{{ ANALYTICS_API_REPORTS_DB_NAME|default('None') }}"
+    - "{{ INSIGHTS_DATABASE_NAME|default('None') }}"
+    - "{{ ECOMMERCE_DEFAULT_DB_NAME|default('None') }}"
+  tags:
+    - rdbms-users
+    
 - name: setup the read-only db user
   mysql_user: >
     name={{ COMMON_MYSQL_READ_ONLY_USER }}
     password={{ COMMON_MYSQL_READ_ONLY_PASS }}
     priv='*.*:ALL'
-
+  tags:
+    - rdbms-users
+    
 - name: setup the admin db user
   mysql_user: >
     name={{ COMMON_MYSQL_ADMIN_USER }}
     password={{ COMMON_MYSQL_ADMIN_PASS }}
     priv='*.*:CREATE USER'
-
+  tags:
+    - rdbms-users
 
 - name: install memcached
   apt: pkg=memcached state=present
