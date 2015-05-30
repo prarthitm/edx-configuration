@@ -21,13 +21,12 @@
 #   when: not disable_edx_services
 #   register: forum_supervisor
 
-# - name: create the supervisor wrapper
-#   template: >
-#     src={{ forum_supervisor_wrapper|basename }}.j2
-#     dest={{ forum_supervisor_wrapper }}
-#     mode=0755
-#   sudo_user: "{{ forum_user }}"
-#   notify: restart the forum service
+- name: create the supervisor wrapper
+  template: >
+    src={{ forum_supervisor_wrapper|basename }}.j2
+    dest={{ forum_supervisor_wrapper }}
+    mode=0755
+  sudo_user: "{{ forum_user }}"
 
 - name:  git checkout forum repo into {{ forum_code_dir }}
   git: >
