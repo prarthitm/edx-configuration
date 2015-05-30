@@ -21,6 +21,14 @@
 #
 #
 
-- name: stub ansible task
-  debug: msg="This is a stub task created by the ansible-role role"
-  notify: notify me
+- name: add ssh-warning banner motd
+  template: >
+    dest=/etc/motd.tail
+    src={{ COMMON_MOTD_TEMPLATE }} mode=0755 owner=root group=root
+
+- name: update ssh config
+  template: >
+    dest=/etc/ssh/sshd_config
+    src=sshd_config.j2 mode=0644 owner=root group=root
+  notify: restart ssh
+
