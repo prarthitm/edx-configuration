@@ -77,6 +77,10 @@
   template: src="create_root.js.j2" dest="/tmp/create_root.js"
   when: not MONGO_CLUSTERED
 
+- name: debug
+  debug:
+    vare MONGO_CLUSTERED
+  
 - name: create super user with js
   shell: >
     /usr/bin/mongo admin /tmp/create_root.js
