@@ -70,6 +70,11 @@
 - name: start mongo service
   service: name=mongod state=started
 
+# TODO: need to refactor this to support both docker and vhosts, see above.
+- name: start mongod
+  shell: >
+    mongod --smallfiles
+  
 # Fails in docker  
 #- name: wait for mongo server to start
 #  wait_for: port=27017 delay=2
