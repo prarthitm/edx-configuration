@@ -73,7 +73,7 @@
 # TODO: need to refactor this to support both docker and vhosts, see above.
 - name: start mongod
   shell: >
-    mongod --smallfiles
+    mongod --smallfiles --config /etc/mongod.conf
   
 # Fails in docker  
 #- name: wait for mongo server to start
