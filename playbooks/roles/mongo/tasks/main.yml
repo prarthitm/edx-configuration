@@ -70,8 +70,9 @@
 - name: start mongo service
   service: name=mongod state=started
 
-- name: wait for mongo server to start
-  wait_for: port=27017 delay=2
+# Fails in docker  
+#- name: wait for mongo server to start
+#  wait_for: port=27017 delay=2
 
 - name: drop super user script
   template: src="create_root.js.j2" dest="/tmp/create_root.js"
