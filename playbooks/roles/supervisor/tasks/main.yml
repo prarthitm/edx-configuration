@@ -164,12 +164,20 @@
     mode=0755
   when: supervisor_service == "supervisor"
 
-- name: start supervisor
-  service: >
-    name={{ supervisor_service }}
-    state=started
-  register: start_supervisor
+#
+# Need to have this handle both vhosts and containers
+# TODO: not sure yet what the best way of doing this will be
+#
+# - name: start supervisor
+#   service: >
+#     name={{ supervisor_service }}
+#     state=started
+#   register: start_supervisor
 
+- name: start supervisor
+  shell: >
+    /edx/app/supervisor/venvs/supervisor/bin/supervisord -n --configuration /edx/app/supervisor/supervisord.conf
+  
   # calling update on supervisor too soon after it
   # starts will result in an errror.
 - name: wait for web port to be available
