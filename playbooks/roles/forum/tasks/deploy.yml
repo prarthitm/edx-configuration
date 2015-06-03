@@ -1,25 +1,25 @@
 ---
 
-# - name: create the supervisor config
-#   template: >
-#     src=forum.conf.j2 dest={{ supervisor_available_dir }}/forum.conf
-#     owner={{ supervisor_user }}
-#     group={{ supervisor_user }}
-#     mode=0644
-#   sudo_user: "{{ supervisor_user }}"
-#   register: forum_supervisor
+- name: create the supervisor config
+  template: >
+    src=forum.conf.j2 dest={{ supervisor_available_dir }}/forum.conf
+    owner={{ supervisor_user }}
+    group={{ supervisor_user }}
+    mode=0644
+  sudo_user: "{{ supervisor_user }}"
+  register: forum_supervisor
 
-# - name: enable the supervisor config
-#   file: >
-#     src={{ supervisor_available_dir }}/forum.conf
-#     dest={{ supervisor_cfg_dir }}/forum.conf
-#     owner={{ supervisor_user }}
-#     state=link
-#     force=yes
-#     mode=0644
-#   sudo_user: "{{ supervisor_user }}"
-#   when: not disable_edx_services
-#   register: forum_supervisor
+- name: enable the supervisor config
+  file: >
+    src={{ supervisor_available_dir }}/forum.conf
+    dest={{ supervisor_cfg_dir }}/forum.conf
+    owner={{ supervisor_user }}
+    state=link
+    force=yes
+    mode=0644
+  sudo_user: "{{ supervisor_user }}"
+  when: not disable_edx_services
+  register: forum_supervisor
 
 - name: create the supervisor wrapper
   template: >
