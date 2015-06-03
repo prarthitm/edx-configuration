@@ -174,15 +174,15 @@
 #     state=started
 #   register: start_supervisor
 
-- name: start supervisor
-  shell: >
-    /edx/app/supervisor/venvs/supervisor/bin/supervisord -n --configuration /edx/app/supervisor/supervisord.conf
+# - name: start supervisor
+#   shell: >
+#     /edx/app/supervisor/venvs/supervisor/bin/supervisord -n --configuration /edx/app/supervisor/supervisord.conf
   
-  # calling update on supervisor too soon after it
-  # starts will result in an errror.
-- name: wait for web port to be available
-  wait_for: port={{ supervisor_http_bind_port }} timeout=5
-  when: start_supervisor.changed
+#   # calling update on supervisor too soon after it
+#   # starts will result in an errror.
+# - name: wait for web port to be available
+#   wait_for: port={{ supervisor_http_bind_port }} timeout=5
+#   when: start_supervisor.changed
 
   # call supervisorctl update every time, this reloads
   # the supervisorctl config
@@ -190,7 +190,7 @@
   # we don't use notifications for supervisor because
   # they don't work well with parameterized roles.
   # See https://github.com/ansible/ansible/issues/4853
-- name: update supervisor configuration
-  shell:  "{{ supervisor_ctl }} -c {{ supervisor_cfg }} update"
-  register: supervisor_update
-  changed_when: supervisor_update.stdout is defined and supervisor_update.stdout != ""
+# - name: update supervisor configuration
+#   shell:  "{{ supervisor_ctl }} -c {{ supervisor_cfg }} update"
+#   register: supervisor_update
+#   changed_when: supervisor_update.stdout is defined and supervisor_update.stdout != ""
