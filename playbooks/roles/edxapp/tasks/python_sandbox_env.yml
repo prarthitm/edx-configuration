@@ -10,7 +10,7 @@
 
 - name: create venv_dir
   file: >
-    path="{{ edx_service_user }}"
+    path="{{ edxapp_sandbox_venv_dir }}"
     state=directory
   
   # Fails with RC12 in docker probably because of an ansible issue
@@ -24,6 +24,13 @@
   tags:
   - edxapp-sandbox
 
+- name: create venv_dir
+  file: >
+    path="{{ edxapp_sandbox_venv_dir }}"
+    state=directory
+    owner={{ edxapp_sandbox_user }}
+    group={{ edxapp_sandbox_user }}
+  
 - name: code sandbox | Install apparmor utils system pkg
   apt: pkg=apparmor-utils state=present
   tags:
