@@ -8,13 +8,13 @@
 - name: code sandbox | Use liblapac for 3gf
   command: update-alternatives --set liblapack.so.3gf /usr/lib/lapack/liblapack.so.3gf
 
+  # Fails with RC12 in docker probably because of an ansible issue
+  # with user creation in ubuntu/debian
+  # home={{ edxapp_sandbox_venv_dir }}
 - name: code sandbox | Create edxapp sandbox user
   user: >
     name={{ edxapp_sandbox_user }}
     shell=/bin/false
-    # Fails with RC12 in docker probably because of an ansible issue
-    # with user creation in ubuntu/debian
-    # home={{ edxapp_sandbox_venv_dir }}
   tags:
   - edxapp-sandbox
 
