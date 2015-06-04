@@ -15,7 +15,7 @@
 # vars are namespace with the module name.
 #
 docker_role_name: docker
-COMMON_HOST_BUILD_TARGET: {{ docker_role_name }}
+COMMON_HOST_BUILD_TARGET: "{{ docker_role_name }}"
 
 #
 # OS packages

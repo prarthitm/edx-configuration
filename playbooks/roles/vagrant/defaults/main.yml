@@ -15,7 +15,7 @@
 # vars are namespace with the module name.
 #
 vagrant_role_name: vagrant
-COMMON_HOST_BUILD_TARGET: {{ vagrant_role_name }}
+COMMON_HOST_BUILD_TARGET: "{{ vagrant_role_name }}"
 #
 # OS packages
 #
