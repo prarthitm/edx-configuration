@@ -47,9 +47,9 @@ EDXAPP_XQUEUE_BASIC_AUTH: [ "{{ COMMON_HTPASSWD_USER }}", "{{ COMMON_HTPASSWD_PA
 EDXAPP_XQUEUE_DJANGO_AUTH:
   username: 'lms'
   password: 'password'
-EDXAPP_XQUEUE_URL: 'http://localhost:18040'
+EDXAPP_XQUEUE_URL: 'http://xqueue:18040'
 
-EDXAPP_MONGO_HOSTS: ['localhost']
+EDXAPP_MONGO_HOSTS: ['mongo']
 EDXAPP_MONGO_PASSWORD: 'password'
 EDXAPP_MONGO_PORT: 27017
 EDXAPP_MONGO_USER: 'edxapp'
@@ -68,7 +68,7 @@ EDXAPP_MYSQL_REPLICA_PASSWORD: "{{ EDXAPP_MYSQL_PASSWORD }}"
 EDXAPP_MYSQL_REPLICA_HOST: "{{ EDXAPP_MYSQL_HOST }}"
 EDXAPP_MYSQL_REPLICA_PORT: "{{ EDXAPP_MYSQL_PORT }}"
 
-EDXAPP_MYSQL_HOST: 'localhost'
+EDXAPP_MYSQL_HOST: 'db'
 EDXAPP_MYSQL_PORT: '3306'
 
 # list of dictionaries of the format
@@ -90,9 +90,9 @@ EDXAPP_EMAIL_HOST_PASSWORD: ''
 
 EDXAPP_LOG_LEVEL: 'INFO'
 
-EDXAPP_MEMCACHE: [ 'localhost:11211' ]
+EDXAPP_MEMCACHE: [ 'memcache:11211' ]
 EDXAPP_CACHE_COURSE_STRUCTURE_MEMCACHE: "{{ EDXAPP_MEMCACHE }}"
-EDXAPP_COMMENTS_SERVICE_URL:  'http://localhost:18080'
+EDXAPP_COMMENTS_SERVICE_URL:  'http://forum:18080'
 EDXAPP_COMMENTS_SERVICE_KEY:  'password'
 
 EDXAPP_EDXAPP_SECRET_KEY: ""
@@ -217,7 +217,7 @@ EDXAPP_CELERY_BROKER_HOSTNAME: ""
 EDXAPP_LOGGING_ENV:  'sandbox'
 
 EDXAPP_SYSLOG_SERVER: ""
-EDXAPP_RABBIT_HOSTNAME: 'localhost'
+EDXAPP_RABBIT_HOSTNAME: 'rabbitmq'
 EDXAPP_XML_MAPPINGS: {}
 
 EDXAPP_LMS_NGINX_PORT: 18000
@@ -408,7 +408,7 @@ EDXAPP_WORKERS: !!null
 EDXAPP_ANALYTICS_DATA_TOKEN: ""
 EDXAPP_ANALYTICS_DATA_URL: ""
 # Dashboard URL, assumes that the insights role is installed locally
-EDXAPP_ANALYTICS_DASHBOARD_URL: "http://localhost:18110/courses"
+EDXAPP_ANALYTICS_DASHBOARD_URL: "http://insights:18110/courses"
 
 EDXAPP_REGISTRATION_EXTRA_FIELDS:
   level_of_education: "optional"
@@ -514,8 +514,8 @@ EDXAPP_PARSE_KEYS: {}
 # In a production environment when using separate clusters, you'll
 # want to route requests differently from the LMS (internal api) and
 # from JS (public API)
-EDXAPP_EDXNOTES_PUBLIC_API: http://localhost:18120/api/v1
-EDXAPP_EDXNOTES_INTERNAL_API: http://localhost:18120/api/v1
+EDXAPP_EDXNOTES_PUBLIC_API: http://notes:18120/api/v1
+EDXAPP_EDXNOTES_INTERNAL_API: http://notes:18120/api/v1
 
 EDXAPP_XBLOCK_SETTINGS: {}
 
