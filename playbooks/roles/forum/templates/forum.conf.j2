@@ -10,7 +10,6 @@ stopsignal=QUIT
 
 [program:nginx]
 command=/etc/init.d/nginx start
-user={{ common_web_user }}
 stdout_logfile={{ supervisor_log_dir }}/%(program_name)s-stdout.log
 stderr_logfile={{ supervisor_log_dir }}/%(program_name)s-stderr.log
 stdout_events_enabled=true
