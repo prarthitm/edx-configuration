@@ -7,20 +7,20 @@
 # code style: https://github.com/edx/configuration/wiki/Ansible-Coding-Conventions
 # license:    https://github.com/edx/configuration/blob/master/LICENSE.TXT
 #
-##
-# Defaults for role docker
+#
+#
+# Tasks for role vagrant
 # 
-
+# Overview:
+# 
 #
-# vars are namespace with the module name.
+# Dependencies:
 #
-docker_role_name: docker
-COMMON_HOST_BUILD_TARGET: {{ docker_role_name }}
-
+# 
+# Example play:
 #
-# OS packages
 #
 
-docker_debian_pkgs: []
-
-docker_redhat_pkgs: []
+- name: stub ansible task
+  debug: msg="This is a stub task created by the ansible-role role"
+  notify: notify me

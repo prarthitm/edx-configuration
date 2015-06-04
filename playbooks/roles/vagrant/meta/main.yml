@@ -8,19 +8,13 @@
 # license:    https://github.com/edx/configuration/blob/master/LICENSE.TXT
 #
 ##
-# Defaults for role docker
+# Role includes for role vagrant
 # 
-
+# Example:
 #
-# vars are namespace with the module name.
-#
-docker_role_name: docker
-COMMON_HOST_BUILD_TARGET: {{ docker_role_name }}
-
-#
-# OS packages
-#
-
-docker_debian_pkgs: []
-
-docker_redhat_pkgs: []
+# dependencies:
+#   - {
+#   role: my_role 
+#   my_role_var0: "foo"
+#   my_role_var1: "bar"
+# }

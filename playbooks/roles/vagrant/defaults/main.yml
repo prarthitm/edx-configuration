@@ -8,19 +8,18 @@
 # license:    https://github.com/edx/configuration/blob/master/LICENSE.TXT
 #
 ##
-# Defaults for role docker
+# Defaults for role vagrant
 # 
 
 #
 # vars are namespace with the module name.
 #
-docker_role_name: docker
-COMMON_HOST_BUILD_TARGET: {{ docker_role_name }}
-
+vagrant_role_name: vagrant
+COMMON_HOST_BUILD_TARGET: {{ vagrant_role_name }}
 #
 # OS packages
 #
 
-docker_debian_pkgs: []
+vagrant_debian_pkgs: []
 
-docker_redhat_pkgs: []
+vagrant_redhat_pkgs: []
