@@ -1,0 +1,29 @@
+db:
+  image: mysql:5.6 
+  environment:
+    - MYSQL_ROOT_PASSWORD=mypassword
+
+mongo:
+  image: edxops/mongo:v2
+  volumes: 
+    - /var/devstack/mongo/data:/data
+
+es:
+  image: edxops/elasticsearch:v1
+  volumes:
+    - /tmp/elasticsearch/data:/es-data
+
+memcache:
+  image: memcached:1.4.24
+
+forum:
+  image: edxops/forums:v2 
+#  volumes:
+#    - /home/edward/Documents/git/edx/configuration:/configuration
+  links:
+    - es
+    - db
+    - mongo
+
+rabbitmq:
+  image: rabbitmq:3.5.3
