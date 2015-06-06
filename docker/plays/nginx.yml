@@ -11,6 +11,10 @@
       nginx_sites:
       - lms
       - cms
+      - forum
+      - ora
+      - xqueue
+      - certs
       nginx_default_sites:
       - lms
       nginx_extra_sites: "{{ NGINX_EDXAPP_EXTRA_SITES }}"
