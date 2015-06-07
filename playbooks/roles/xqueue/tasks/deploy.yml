@@ -73,6 +73,10 @@
   when: migrate_db is defined and migrate_db|lower == "yes" and COMMON_MYSQL_MIGRATE_PASS
   notify:
     - restart xqueue
+    
+- name: TODO running rsyslog manually
+  shell: >
+    /usr/sbin/rsyslogd
 
 - name: create users
   shell: >
