@@ -12,7 +12,6 @@
       - lms
       - cms
       - forum
-      - ora
       - xqueue
       - certs
       nginx_default_sites:

@@ -4,10 +4,18 @@ MAINTAINER edxops
 USER docker
 RUN sudo git fetch --all
 RUN sudo git checkout e0d/docker-latest
+RUN sudo git reset --hard origin/e0d/docker-latest
 RUN sudo git pull
-WORKDIR /edx/app/edx_ansible/edx_ansible/playbooks/edx-east
-RUN sudo ansible-playbook forum-docker.yml -c local
-USER root 
-CMD ["/edx/app/supervisor/venvs/supervisor/bin/supervisord", "-n", "--configuration", "/edx/app/supervisor/supervisord.conf"]
-#ENTRYPOINT ["/bin/bash"]
-EXPOSE 18080
+WORKDIR /edx/app/edx_ansible/edx_ansible/docker/plays
+RUN sudo ansible-playbook nginx.yml -c local \
+   -e@roles/edxapp/defaults/main.yml \
+   -e@roles/forum/defaults/main.yml \
+   -e@roles/xqueue/defaults/main.yml \
+   -e@roles/ora/defaults/main.yml \
+   -e@roles/certs/defaults/main.yml
+
+USER root
+RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
+WORKDIR /etc/nginx
+CMD ["/usr/sbin/nginx"]
+EXPOSE 18000 48000 18010 48010 18020
