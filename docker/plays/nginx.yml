@@ -11,7 +11,6 @@
       nginx_sites:
       - lms
       - cms
-      - forum
       - xqueue
       - certs
       nginx_default_sites:

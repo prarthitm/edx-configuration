@@ -9,7 +9,6 @@ RUN sudo git pull
 WORKDIR /edx/app/edx_ansible/edx_ansible/docker/plays
 RUN sudo ansible-playbook nginx.yml -c local \
    -e@roles/edxapp/defaults/main.yml \
-   -e@roles/forum/defaults/main.yml \
    -e@roles/xqueue/defaults/main.yml \
    -e@roles/ora/defaults/main.yml \
    -e@roles/certs/defaults/main.yml
