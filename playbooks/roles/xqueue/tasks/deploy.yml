@@ -95,7 +95,7 @@
   shell:  "{{ supervisor_ctl }} -c {{ supervisor_cfg }} update"
   register: supervisor_update
   changed_when: supervisor_update.stdout is defined and supervisor_update.stdout != ""
-  when: not disable_edx_services
+  when: not disable_edx_services and COMMON_HOST_BUILD_TARGET not in ["docker"]
 
 - name: ensure xqueue, consumer is running
   supervisorctl: >
