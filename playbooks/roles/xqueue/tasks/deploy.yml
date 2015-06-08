@@ -84,7 +84,8 @@
   sudo_user: "{{ xqueue_user }}"
   notify:
     - restart xqueue
-
+  when: COMMON_HOST_BUILD_TARGET not in ["docker"]
+  
   # call supervisorctl update. this reloads
   # the supervisorctl config and restarts
   # the services if any of the configurations
