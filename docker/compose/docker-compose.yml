@@ -4,20 +4,23 @@ db:
     - MYSQL_ROOT_PASSWORD=mypassword
 
 mongo:
-  image: edxops/mongo:v2
+  #image: edxops/mongo:v2
+  build: ../build/mongo
   volumes: 
     - /var/devstack/mongo/data:/data
 
 es:
-  image: edxops/elasticsearch:v1
+  build: ../build/elasticsearch
+  #image: edxops/elasticsearch:v1
   volumes:
     - /tmp/elasticsearch/data:/es-data
 
 memcache:
   image: memcached:1.4.24
 
-forum:
-  image: edxops/forums:v2 
+forums:
+  build: ../build/forums
+#  image: edxops/forums:v2 
 #  volumes:
 #    - /home/edward/Documents/git/edx/configuration:/configuration
   links:
@@ -25,5 +28,29 @@ forum:
     - db
     - mongo
 
+nginx:
+  build: ../build/nginx
+  #image: edxops/nginx:v1
+  links:
+    - forums
+    
 rabbitmq:
   image: rabbitmq:3.5.3
+
+# xqueue:
+#   build: ../build/xqueue
+#   linke:
+#     - db
+#     - rabbitmq
+#     - nginx
+  
+edxapp:
+  build: ../build/edxapp
+  links:
+    - nginx
+    - es
+    - rabbitmq
+    - db
+    - mongo
+    - forums
+

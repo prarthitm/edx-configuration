@@ -1,4 +1,4 @@
-FROM edxops/precice_basis:v1
+FROM edxops/precise-common:v2
 MAINTAINER e0d
 
 USER docker
