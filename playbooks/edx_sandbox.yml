@@ -36,7 +36,6 @@
     - edxapp
     - notifier
     - analytics_api
-    - insights
     - edx_notes_api
     - demo
     - { role: 'rabbitmq', rabbitmq_ip: '127.0.0.1' }
@@ -44,8 +43,6 @@
     - elasticsearch
     - forum
     - { role: notifier, NOTIFIER_DIGEST_TASK_INTERVAL: "5" }
-    - { role: "xqueue", update_users: True }
-    - xqwatcher
     - role: ora
       when: ENABLE_LEGACY_ORA
     - certs
