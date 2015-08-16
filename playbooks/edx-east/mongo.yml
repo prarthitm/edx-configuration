@@ -4,6 +4,8 @@
   gather_facts: True
   roles:
     - mongo
+    # Doesn't work in default case, not MMSAPIKEY
+    #    - mongo_mms
     - role: datadog
       when: COMMON_ENABLE_DATADOG
     - role: splunkforwarder
