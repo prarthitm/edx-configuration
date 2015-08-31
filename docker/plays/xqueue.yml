@@ -5,6 +5,9 @@
   roles:
     - docker
     - role: xqueue
+    - role: nginx
+      nginx_sites:
+      - xqueue
     - role: datadog
       when: COMMON_ENABLE_DATADOG
     - role: splunkforwarder

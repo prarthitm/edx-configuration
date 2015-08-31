@@ -2,55 +2,60 @@ db:
   image: mysql:5.6 
   environment:
     - MYSQL_ROOT_PASSWORD=mypassword
+    - DNSDOCK_NAME=db1
+    - DNSDOCK_IMAGE=db
 
-mongo:
+#mongo:
   #image: edxops/mongo:v2
-  build: ../build/mongo
-  volumes: 
-    - /var/devstack/mongo/data:/data
+#  build: ../build/mongo
+#  volumes: 
+#    - /var/devstack/mongo/data:/data
 
-es:
-  build: ../build/elasticsearch
+#es:
+#  build: ../build/elasticsearch
   #image: edxops/elasticsearch:v1
-  volumes:
-    - /tmp/elasticsearch/data:/es-data
+#  volumes:
+#    - /tmp/elasticsearch/data:/es-data
 
-memcache:
-  image: memcached:1.4.24
+#memcache:
+#  image: memcached:1.4.24
 
-forums:
-  build: ../build/forums
+#forums:
+#  build: ../build/forums
 #  image: edxops/forums:v2 
 #  volumes:
 #    - /home/edward/Documents/git/edx/configuration:/configuration
-  links:
-    - es
-    - db
-    - mongo
+#  links:
+#    - es
+#    - db
+#    - mongo
 
-nginx:
-  build: ../build/nginx
+#nginx:
+#  build: ../build/nginx
   #image: edxops/nginx:v1
-  links:
-    - forums
+#  links:
+#    - forums
     
-rabbitmq:
-  image: rabbitmq:3.5.3
+#rabbitmq:
+#  image: rabbitmq:3.5.3
 
-# xqueue:
-#   build: ../build/xqueue
-#   linke:
-#     - db
-#     - rabbitmq
-#     - nginx
-  
-edxapp:
-  build: ../build/edxapp
+xqueue:
+   #build: ../build/xqueue
+  image: edxops/xqueue:v1
   links:
-    - nginx
-    - es
-    - rabbitmq
     - db
-    - mongo
-    - forums
+     #- rabbitmq
+     #- nginx
+  environment:
+      - DNSDOCK_IMAGE=xqueue
+ 
+#edxapp:
+#  build: ../build/edxapp
+#  links:
+#    - nginx
+#    - es
+#    - rabbitmq
+#    - db
+#    - mongo
+#    - forums
 
