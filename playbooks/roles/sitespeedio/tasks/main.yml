@@ -40,7 +40,7 @@
   git: >
     repo=https://github.com/edx/sitespeed.io.git
     dest=/tmp/sitespeedio
-    version=712f24ed57aef210a81062ce13863837ea570866
+    version=benp/fix-browsertime-callback-error
     depth=1
 
 - name: Install sitespeed.io from master
