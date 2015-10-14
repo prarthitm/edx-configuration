@@ -1,5 +1,5 @@
 FROM ubuntu:precise 
-MAINTAINER e0d
+MAINTAINER edxops
 
 RUN apt-get update
 RUN apt-get -y install sudo
