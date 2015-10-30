@@ -251,6 +251,89 @@ PROGRAMS_SOCIAL_AUTH_REDIRECT_IS_HTTPS: true
 EOF
 fi
 
+cat << EOF >> $extra_vars_file
+EDXAPP_PLATFORM_NAME: "edX"
+# Enable the marketing site front-end
+# Note: this will cause requests to "/" to redirect to edx.org!
+# You will need to go to "/login" instead to access the sandbox.
+EDXAPP_ENABLE_MKTG_SITE: true
+EDXAPP_MKTG_URLS:
+  ROOT: "https://edx.org"
+  ABOUT: "/about-us"
+  NEWS: "/news-announcements"
+  CONTACT: "/contact"
+  FAQ: "/student-faq"
+  BLOG: "/edx-blog"
+  DONATE: "/donate"
+  JOBS: "/jobs"
+  SITE_MAP: "/sitemap"
+  TOS_AND_HONOR: "/edx-terms-service"
+  PRIVACY: "/edx-privacy-policy"
+  ACCESSIBILITY: "/accessibility"
+
+EDXAPP_SOCIAL_MEDIA_FOOTER_URLS:
+  facebook: "https://www.facebook.com/edX"
+  youtube: "https://www.youtube.com/user/edxonline?sub_confirmation=1"
+  twitter: "https://twitter.com/edxonline"
+  linkedin: "https://www.linkedin.com/company/edx"
+  google_plus: "https://plus.google.com/+edXOnline"
+  reddit: "http://www.reddit.com/r/edx"
+
+EDXAPP_MOBILE_STORE_URLS:
+  apple: "https://itunes.apple.com/us/app/edx/id945480667?mt=8"
+  google: "https://play.google.com/store/apps/details?id=org.edx.mobile&hl=en"
+
+EDXAPP_FOOTER_ORGANIZATION_IMAGE: "images/edx-theme/edx-header-logo.png"
+
+# You will need to configure OAuth2 applications at:
+# Google: https://console.developers.google.com
+# Facebook: https://developers.facebook.com/apps
+EDXAPP_THIRD_PARTY_AUTH:
+    Google:
+        SOCIAL_AUTH_GOOGLE_OAUTH2_KEY: "YOUR_OAUTH2_KEY"
+        SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET: "YOUR_OAUTH2_SECRET"
+    Facebook:
+        SOCIAL_AUTH_FACEBOOK_KEY: "YOUR_OAUTH2_KEY"
+        SOCIAL_AUTH_FACEBOOK_SECRET: "YOUR_OAUTH2_SECRET"
+
+# This makes it possible to test cross-domain requests
+# (e.g. from the marketing site to the sandbox).
+# In production, we use a whitelist, but for testing purposes
+# allowing all origins is more convenient.
+EDXAPP_CORS_ORIGIN_ALLOW_ALL: true
+
+EDXAPP_FEATURES:
+  AUTH_USE_OPENID_PROVIDER: true
+  CERTIFICATES_ENABLED: true
+  ENABLE_DISCUSSION_SERVICE: true
+  ENABLE_DISCUSSION_HOME_PANEL: true
+  ENABLE_INSTRUCTOR_ANALYTICS: false
+  SUBDOMAIN_BRANDING: false
+  SUBDOMAIN_COURSE_LISTINGS: false
+  PREVIEW_LMS_BASE: "{{ EDXAPP_PREVIEW_LMS_BASE }}"
+  ENABLE_S3_GRADE_DOWNLOADS: true
+  USE_CUSTOM_THEME: "{{ edxapp_use_custom_theme }}"
+  ENABLE_MKTG_SITE: "{{ EDXAPP_ENABLE_MKTG_SITE }}"
+  AUTOMATIC_AUTH_FOR_TESTING: "{{ EDXAPP_ENABLE_AUTO_AUTH }}"
+  AUTOMATIC_VERIFY_STUDENT_IDENTITY_FOR_TESTING: true
+  ENABLE_PAYMENT_FAKE: true
+  ENABLE_VIDEO_UPLOAD_PIPELINE: true
+  SEPARATE_VERIFICATION_FROM_PAYMENT: true
+  ENABLE_COMBINED_LOGIN_REGISTRATION: true
+  ENABLE_CORS_HEADERS: true
+  ENABLE_MOBILE_REST_API: true
+  ENABLE_OAUTH2_PROVIDER: true
+  LICENSING: true
+
+  IS_EDX_DOMAIN: true
+  ENABLE_FOOTER_MOBILE_APP_LINKS: true
+  ENABLE_THIRD_PARTY_AUTH: true
+
+  PREVENT_CONCURRENT_LOGINS: false
+  ENABLE_COURSE_BLOCKS_NAVIGATION_API: true
+  ENABLE_VIDEO_UPLOAD_PIPELINE: true
+
+EOF
 
 if [[ $recreate == "true" ]]; then
     # vars specific to provisioning added to $extra-vars
