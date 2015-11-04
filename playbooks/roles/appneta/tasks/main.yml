@@ -1,0 +1,57 @@
+---
+#
+# edX Configuration
+#
+# github:     https://github.com/edx/configuration
+# wiki:       https://github.com/edx/configuration/wiki
+# code style: https://github.com/edx/configuration/wiki/Ansible-Coding-Conventions
+# license:    https://github.com/edx/configuration/blob/master/LICENSE.TXT
+#
+#
+#
+# Tasks for role appneta
+# 
+# Overview:
+# 
+#
+# Dependencies:
+#
+# 
+# Example play:
+#
+#
+
+- name: foo
+  debug: var=APPNETA_APT_KEY_ID
+
+- name: debug
+  debug: var=appneta_repo
+
+- name: Add the appneta apt repository
+  apt_repository: >
+    repo='{{ appneta_repo }}'
+    state=present
+  tags:
+    - install
+    
+- name: Add the appneta key
+  apt_key: >
+    id={{ APPNETA_APT_KEY_ID }}
+    keyserver={{ APPNETA_APY_KEY_SERVER }}
+    state=present
+  tags:
+    - install
+
+- name: Save access key
+  shell: >
+    echo "tracelyzer.access_key={{ APPNETA_ACCESS_KEY }}" > /etc/tracelytics.conf
+    
+- name: Install OS packages
+  apt: >
+    pkg={{ item }}
+    state=present
+    update_cache=yes
+  tags:
+    - install
+    - install:system-requirements
+  with_items: appneta_debian_pkgs

@@ -1,0 +1,35 @@
+---
+#
+# edX Configuration
+#
+# github:     https://github.com/edx/configuration
+# wiki:       https://github.com/edx/configuration/wiki
+# code style: https://github.com/edx/configuration/wiki/Ansible-Coding-Conventions
+# license:    https://github.com/edx/configuration/blob/master/LICENSE.TXT
+#
+##
+# Defaults for role appneta
+# 
+
+APPNETA_APT_HOST: "https://apt.appneta.com"
+APPNETA_ACCESS_KEY: "your-access-key-here"
+APPNETA_APT_DISTRO: "precise"
+APPNETA_APY_KEY_SERVER: "keyserver.ubuntu.com"
+APPNETA_APT_KEY_ID: "E04AD2E4"
+
+appneta_repo: "deb {{ APPNETA_APT_HOST }}/{{ APPNETA_ACCESS_KEY }} {{ ansible_distribution_release }} main"
+
+#
+# vars are namespaced with the module name.
+#
+appneta_role_name: appneta
+#
+# OS packages
+#
+
+appneta_debian_pkgs:
+  - liboboe0
+  - liboboe-dev
+  - tracelyzer
+
+appneta_redhat_pkgs: []
