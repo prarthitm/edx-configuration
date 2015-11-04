@@ -55,3 +55,14 @@
     - install
     - install:system-requirements
   with_items: appneta_debian_pkgs
+
+
+- name: Install custom nginx
+  apt: >
+    pkg={{ item }}
+    state=present
+  tags:
+    - intall
+    - install:nginx-agent
+  with_items:
+    - nginx-full
