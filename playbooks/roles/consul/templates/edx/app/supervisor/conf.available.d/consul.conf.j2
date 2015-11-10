@@ -1,0 +1,9 @@
+[program:consul]
+command={{ consul_app_dir }}/consul agent -data-dir {{ consul_data_dir }} -config-dir {{ consul_config_dir }} -client {{ CONSUL_CLIENT }} -join {{ CONSUL_SERVER }}
+priority=999
+user={{ common_web_user }}
+stdout_logfile={{ supervisor_log_dir }}/%(program_name)s-stdout.log
+stderr_logfile={{ supervisor_log_dir }}/%(program_name)s-stderr.log
+killasgroup=true
+stopasgroup=true
+stopsignal=QUIT

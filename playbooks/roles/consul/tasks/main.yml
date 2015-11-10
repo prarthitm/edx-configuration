@@ -1,0 +1,80 @@
+---
+#
+# edX Configuration
+#
+# github:     https://github.com/edx/configuration
+# wiki:       https://github.com/edx/configuration/wiki
+# code style: https://github.com/edx/configuration/wiki/Ansible-Coding-Conventions
+# license:    https://github.com/edx/configuration/blob/master/LICENSE.TXT
+#
+#
+#
+# Tasks for role consul
+# 
+# Overview:
+# 
+#
+# Dependencies:
+#
+# 
+# Example play:
+#
+#
+
+- name: Create target directory
+  file: >
+    path="{{ item }}"
+    state="directory"
+    owner={{ supervisor_user }}
+    group={{ common_web_user }}
+    mode="0770"
+  tags:
+    - install
+    - install:base
+  with_items:
+    - "{{consul_app_dir }}"
+    - "{{consul_data_dir }}"
+    - "{{consul_config_dir }}"
+    - "{{consul_config_dir }}/consul.d/"
+
+- name: Download the Consul binary distrubution
+  get_url: >
+    url="{{ consul_url }}"
+    dest="{{ consul_app_dir }}/{{ consul_file }}"
+    mode=0440
+    sha256sum="{{ checksums.linux_amd64 }}"
+  tags:
+    - install
+    - install:base
+
+- name: Unzip the archive
+  unarchive: >
+    src="{{ consul_app_dir }}/{{ consul_file }}"
+    dest="{{ consul_app_dir }}"
+  tags:
+    - install
+    - install:base
+
+- name: Create supervisor script
+  template: >
+    src=edx/app/supervisor/conf.available.d/consul.conf.j2
+    dest={{ supervisor_available_dir }}/consul.conf
+    owner={{ supervisor_user }}
+    group={{ common_web_user }}
+    mode=0644
+  tags:
+    - install
+    - install:configuration
+
+- name: Enable supervisor script
+  file: >
+    src={{ supervisor_available_dir }}/consul.conf
+    dest={{ supervisor_cfg_dir }}/consul.conf
+    owner={{ supervisor_user }}
+    group={{ common_web_user }}
+    mode=0644
+    state=link
+    force=yes
+  tags:
+    - install
+    - install:configuration

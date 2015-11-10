@@ -1,0 +1,61 @@
+---
+#
+# edX Configuration
+#
+# github:     https://github.com/edx/configuration
+# wiki:       https://github.com/edx/configuration/wiki
+# code style: https://github.com/edx/configuration/wiki/Ansible-Coding-Conventions
+# license:    https://github.com/edx/configuration/blob/master/LICENSE.TXT
+#
+#
+# Defaults for role consul
+# 
+#
+# vars are namespaced with the module name.
+#
+
+CONSUL_VERSION: "0.5.2"
+CONSUL_ARCHITECTURE:  "linux_amd64"
+
+# Specify whether we're running in client or server mode
+CONSUL_MODE: "client"
+CONSUL_CLIENT: "0.0.0.0"
+CONSUL_SERVER: "edx_node1_1.edx"
+
+consul_role_name: consul
+consul_app_dir: "{{ COMMON_APP_DIR }}/{{ consul_role_name }}"
+consul_data_dir: "{{ COMMON_DATA_DIR }}/{{ consul_role_name }}"
+consul_config_dir: "{{ COMMON_CFG_DIR }}/{{ consul_role_name }}"
+consul_file: "consul_{{ CONSUL_VERSION }}_{{ CONSUL_ARCHITECTURE }}.zip"
+consul_url: "https://releases.hashicorp.com/consul/{{ CONSUL_VERSION }}/{{ consul_file }}"
+
+# Sig verified prior to additon
+checksums:
+  darwin_amd64: 87be515d7dbab760a61a359626a734f738d46ece367f68422b7dec9197d9eeea
+  linux_386: 29306ce398109f954ceeea3af79878be4fb0d949f8af3a27c95ccef2101e8f60
+  linux_amd64: 171cf4074bfca3b1e46112105738985783f19c47f4408377241b868affa9d445
+  web_ui: ad883aa52e1c0136ab1492bbcedad1210235f26d59719fb6de3ef6464f1ff3b1
+  windows_386: 2e866812de16f1a6138a0fd1eebc76143f1314826e3b52597a55ac510ae94be6
+
+
+
+services:
+  # needed for expected JSON format
+  - service:
+    name: "test_service"
+    tags:
+      - consul_managed
+      - test
+    port: 22
+    check:
+      script: "/bin/true"
+      interval: "10s"
+
+
+#
+# OS packages
+#
+
+consul_debian_pkgs: []
+
+consul_redhat_pkgs: []
