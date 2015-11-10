@@ -1,0 +1,46 @@
+---
+#
+# edX Configuration
+#
+# github:     https://github.com/edx/configuration
+# wiki:       https://github.com/edx/configuration/wiki
+# code style: https://github.com/edx/configuration/wiki/Ansible-Coding-Conventions
+# license:    https://github.com/edx/configuration/blob/master/LICENSE.TXT
+#
+#
+#
+# Tasks for role supervised_rsyslogd
+# 
+# Overview:
+# 
+#
+# Dependencies:
+#
+# 
+# Example play:
+#
+#
+
+- name: Create supervisor script
+  template: >
+    src=edx/app/supervisor/conf.available.d/rsyslogd.conf.j2
+    dest={{ supervisor_available_dir }}/rsyslogd.conf
+    owner={{ supervisor_user }}
+    group={{ common_web_user }}
+    mode=0644
+  tags:
+    - install
+    - install:configuration
+
+- name: Enable supervisor script
+  file: >
+    src={{ supervisor_available_dir }}/rsyslogd.conf
+    dest={{ supervisor_cfg_dir }}/rsyslogd.conf
+    owner={{ supervisor_user }}
+    group={{ common_web_user }}
+    mode=0644
+    state=link
+    force=yes
+  tags:
+    - install
+    - install:configuration
