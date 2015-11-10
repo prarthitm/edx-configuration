@@ -78,3 +78,17 @@
   tags:
     - install
     - install:configuration
+
+# POC
+# TODO: role responsibility
+- name: Create consul service scripts
+  template: >
+    src=edx/etc/consul/consul.d/service.conf.j2
+    dest={{consul_config_dir }}/consul.d/{{ item.key }}.conf
+    owner={{ supervisor_user }}
+    group={{ common_web_user }}
+    mode=0644
+  tags:
+    - install
+    - install:configuration
+  with_dict: "{{ services }}"

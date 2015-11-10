@@ -41,15 +41,16 @@ checksums:
 
 services:
   # needed for expected JSON format
-  - service:
-    name: "test_service"
-    tags:
-      - consul_managed
-      - test
-    port: 22
-    check:
-      script: "/bin/true"
-      interval: "10s"
+  test_service:
+    service:
+      name: "test_service"
+      tags:
+        - consul_managed
+        - test
+      port: 22
+      check:
+        script: "/bin/true"
+        interval: "10s"
 
 
 #
