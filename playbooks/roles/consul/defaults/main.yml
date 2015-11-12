@@ -47,7 +47,7 @@ services:
       tags:
         - consul_managed
         - test
-      port: 22
+      port: 8000
       check:
         script: "/bin/true"
         interval: "10s"
