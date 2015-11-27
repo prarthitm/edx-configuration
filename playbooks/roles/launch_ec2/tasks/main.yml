@@ -63,7 +63,7 @@
     type: CNAME
     ttl: 300
     record: "{{ dns_name }}.{{ dns_zone }}"
-    value: "{{ item.public_dns_name }}"
+    value: "{{ item.private_dns_name }}"
   with_items: ec2.instances
 
 - name: Add DNS names for services
@@ -75,7 +75,7 @@
     type: CNAME
     ttl: 300
     record: "{{ item[1] }}-{{ dns_name }}.{{ dns_zone }}"
-    value: "{{ item[0].public_dns_name }}"
+    value: "{{ item[0].private_dns_name }}"
   with_nested:
     - ec2.instances
     - ['studio', 'ecommerce', 'preview', 'programs']
