@@ -91,7 +91,7 @@
 - name: Wait for SSH to come up
   local_action:
     module: wait_for
-    host: "{{ item.public_dns_name }}"
+    host: "{{ item.private_dns_name }}"
     state: started
     port: 22
     delay: 60
