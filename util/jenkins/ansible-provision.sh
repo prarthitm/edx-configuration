@@ -23,7 +23,7 @@ export PYTHONUNBUFFERED=1
 export BOTO_CONFIG=/var/lib/jenkins/${aws_account}.boto
 
 run_ansible() {
-  ansible-playbook $@
+  ansible-playbook -vvvv $@
   ret=$?
   if [[ $ret -ne 0 ]]; then
     exit $ret
