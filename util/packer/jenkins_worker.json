@@ -3,7 +3,8 @@
     "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
     "playbook_remote_dir": "/tmp/packer-edx-playbooks",
-    "ami": "{{env `JENKINS_WORKER_AMI`}}"
+    "ami": "{{env `JENKINS_WORKER_AMI`}}",
+    "test_platform_version": "{{env `TEST_PLATFORM_VERSION`}}"
   },
   "builders": [{
     "type": "amazon-ebs",
@@ -66,6 +67,6 @@
       "virtualenv packer-venv",
       ". packer-venv/bin/activate",
       "pip install -q -r requirements.txt",
-      "ansible-playbook run_role.yml -i inventory.ini -c local -e role=test_build_server -vvvv"]
+      "ansible-playbook run_role.yml -i inventory.ini -c local -e 'role=test_build_server test_platform_version={{user `test_platform_version`}}' -vvvv"]
   }]
 }
