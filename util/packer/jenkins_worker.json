@@ -67,6 +67,6 @@
       "virtualenv packer-venv",
       ". packer-venv/bin/activate",
       "pip install -q -r requirements.txt",
-      "ansible-playbook run_role.yml -i inventory.ini -c local -e 'role=test_build_server test_platform_version={{user `test_platform_version`}}' -vvvv"]
+      "ansible-playbook run_role.yml -i inventory.ini -c local --extra-vars='role=test_build_server,test_platform_version={{user `test_platform_version`}}' -vvvv"]
   }]
 }
