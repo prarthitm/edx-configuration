@@ -24,7 +24,11 @@ fi
 if [[ -z "$CONFIGURATION_VERSION" ]]; then
   CONFIGURATION_VERSION="master"
 fi
-1
+
+if [[ -z "UPGRADE_OS" ]]; then
+  UPGRADE_OS=false
+fi
+
 #
 # Bootstrapping constants
 #
@@ -53,26 +57,37 @@ if [[ $(id -u) -ne 0 ]] ; then
     exit 1;
 fi
 
-if ! grep -q 'Precise Pangolin' /etc/os-release; then
+if ! grep -q -e 'Precise Pangolin' -e 'Trusty Tahr' /etc/os-release; then
     cat << EOF
-    This script is only known to work on Ubuntu Precise, exiting.
-    If you are interested in helping make installation possible
+    
+    This script is only known to work on Ubuntu Precise and Trusty,
+    exiting.  If you are interested in helping make installation possible
     on other platforms, let us know.
+
 EOF
    exit 1;
 fi
 
 # Upgrade the OS
 apt-get update -y
-apt-get upgrade -y
+
+if [ "$UPGRADE_OS" = true ]; then
+    echo "Upgrading the OS..."
+    apt-get upgrade -y
+fi
 
 # Required for add-apt-repository
 apt-get install -y software-properties-common python-software-properties git
 
-# Install python 2.7.10
-add-apt-repository ppa:fkrull/deadsnakes-python2.7
+# Add git PPA
+add-apt-repository ppa:git-core/ppa
+
+# Add python PPA
+ppa:git-core/ppa
+
+# Install python 2.7.10, git and other common requirements
 apt-get update -y
-apt-get install -y build-essential sudo python2.7 python2.7-dev python-pip python-apt python-yaml python-jinja2 libmysqlclient-dev
+apt-get install -y build-essential sudo git python2.7 python2.7-dev python-pip python-apt python-yaml python-jinja2 libmysqlclient-dev
 
 pip install virtualenv==${VIRTUAL_ENV_VERSION}
 
