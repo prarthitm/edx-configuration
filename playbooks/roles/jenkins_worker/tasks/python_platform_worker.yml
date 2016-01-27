@@ -38,10 +38,10 @@
     virtualenv_command=virtualenv
     executable=pip
   with_items:
-    - pre.txt
-    - github.txt
-    - base.txt
     - paver.txt
+    - pre.txt
+    - base.txt
+    - github.txt
   sudo_user: "{{ jenkins_user }}"
 
 
