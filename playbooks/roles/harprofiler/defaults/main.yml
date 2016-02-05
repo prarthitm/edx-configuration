@@ -13,5 +13,5 @@ harprofiler_dir: /edx/app/harprofiler
 harprofiler_venv_dir: "{{ harprofiler_dir }}/venvs/harprofiler"
 harprofiler_validation_script: validate_harprofiler_install.sh
 harprofiler_apt_requirements:
-  - xfvb
+  - xvfb
 harprofiler_browsermob_dir: /usr/local
