@@ -1,3 +1,4 @@
 # browsermob-proxy
 browsermob_proxy_version: '2.1.0-beta-4'
 browsermob_proxy_url: 'https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-{{ browsermob_proxy_version }}/browsermob-proxy-{{ browsermob_proxy_version }}-bin.zip'
+browsermob_proxy_dir: '/etc/browsermob-proxy-{{browsermob_proxy_version}}'
