@@ -42,6 +42,16 @@
     - install
     - install:configuration
 
+- name: install system requirements
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items: "{{ harprofiler_apt_requirements }}"
+  tags:
+    - install
+    - install:system-requirements
+
 - name: install requirements
   pip:
     requirements: "{{ harprofiler_dir }}/requirements.txt"
@@ -57,7 +67,7 @@
   lineinfile:
     dest: "{{ harprofiler_dir }}/config.yaml"
     regexp: "browsermob_dir"
-    line: "browsermob_dir: /usr/local"
+    line: "browsermob_dir: {{ harprofiler_browsermob_dir }}"
     state: present
   tags:
     - install
