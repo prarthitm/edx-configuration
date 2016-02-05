@@ -6,6 +6,9 @@
     createhome: no
     home: "{{ harprofiler_dir }}"
     shell: /bin/bash
+  tags:
+    - install
+    - install:base
 
 - name: create harprofiler repo
   file:
@@ -14,6 +17,9 @@
     owner: "{{ harprofiler_user }}"
     group: "{{ common_web_group }}"
     mode: 0755
+  tags:
+    - install
+    - install:base
 
 - name: check out the harprofiler
   git:
@@ -22,6 +28,9 @@
     version: "{{ harprofiler_version }}"
     accept_hostkey: yes
   sudo_user: "{{ harprofiler_user }}"
+  tags:
+    - install
+    - install:code
 
 - name: set bashrc for harprofiler user
   template:
@@ -29,12 +38,18 @@
     dest: "{{ harprofiler_dir }}/.bashrc"
     owner: "{{ harprofiler_user }}"
     mode: 0755
+  tags:
+    - install
+    - install:configuration
 
 - name: install requirements
   pip:
     requirements: "{{ harprofiler_dir }}/requirements.txt"
     virtualenv: "{{ harprofiler_venv_dir }}"
   sudo_user: "{{ harprofiler_user }}"
+  tags:
+    - install
+    - install:app-requirements
 
 - name: update config file
 # harprofiler ships with a default config file. Doing a line-replace for the default
@@ -44,6 +59,9 @@
     regexp: "browsermob_dir"
     line: "browsermob_dir: /usr/local"
     state: present
+  tags:
+    - install
+    - install:configuration
 
 - name: create validation shell script
   template:
@@ -52,6 +70,9 @@
     dest: "{{ harprofiler_dir }}/{{ harprofiler_validation_script }}"
     mode: 0755
   sudo_user: "{{ harprofiler_user }}"
+  tags:
+    - install
+    - install:code
 
 
 - name: test install
@@ -59,3 +80,6 @@
   args:
     chdir: "{{ harprofiler_dir }}"
   sudo_user: "{{ harprofiler_user }}"
+  tags:
+    - test
+    - test:unit
