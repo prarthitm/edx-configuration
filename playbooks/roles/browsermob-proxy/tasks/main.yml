@@ -29,19 +29,11 @@
     - install
     - install:system-requirements
 
-- name: add wrapper script /usr/local/bin/browsermob-proxy
-  copy:
-    src: browsermob-proxy
-    dest: /usr/local/bin/browsermob-proxy
-  when: download_browsermob_proxy.changed
-  tags:
-    - install
-    - install:system-requirements
-
-- name: change permissions of wrapper script
+- name: symlink /usr/local/bin/browsermob-proxy
   file:
-    path: /usr/local/bin/browsermob-proxy
-    mode: 0755
+    state: link
+    src: "{{ browsermob_proxy_dir }}/bin/browsermob-proxy"
+    dest: /usr/local/bin/browsermob-proxy
   when: download_browsermob_proxy.changed
   tags:
     - install
