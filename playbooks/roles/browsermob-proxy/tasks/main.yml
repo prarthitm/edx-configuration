@@ -40,8 +40,8 @@
     - install:system-requirements
 
 - name: add wrapper script /usr/local/bin/browsermob-proxy
-  copy:
-    src: browsermob-proxy
+  template:
+    src: browsermob-proxy.j2
     dest: /usr/local/bin/browsermob-proxy
   when: download_browsermob_proxy.changed
   tags:
