@@ -27,3 +27,6 @@
 # `course_id`.
 #
 browser_monitoring.attributes.enabled=true
+
+rules:
+  ignore_url_regexes: ["{{ "\",\"".join(COMMON_NEWRELIC_IGNORE_REGEXES)}}"]

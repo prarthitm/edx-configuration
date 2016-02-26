@@ -12,6 +12,7 @@
 {% if COMMON_ENABLE_NEWRELIC_APP %}
 export NEW_RELIC_APP_NAME="{{ INSIGHTS_NEWRELIC_APPNAME }}"
 export NEW_RELIC_LICENSE_KEY="{{ NEWRELIC_LICENSE_KEY }}"
+export NEW_RELIC_RULES_IGNORE_URL_REGEXES='{{ ",".join(COMMON_NEWRELIC_IGNORE_REGEXES) }}'
 {% endif -%}
 
 source {{ insights_app_dir }}/insights_env

@@ -12,7 +12,7 @@ command={{ executable }} -c {{ edx_notes_api_home }}/edx_notes_api_gunicorn.py {
 user={{ common_web_user }}
 directory={{ edx_notes_api_code_dir }}
 
-environment={% if COMMON_ENABLE_NEWRELIC_APP %}NEW_RELIC_APP_NAME={{ EDX_NOTES_API_NEWRELIC_APPNAME }},NEW_RELIC_LICENSE_KEY={{ NEWRELIC_LICENSE_KEY }},{% endif -%}PID=/var/tmp/edx_notes_api.pid,PORT={{ edx_notes_api_gunicorn_port }},ADDRESS={{ edx_notes_api_gunicorn_host }},LANG={{ EDX_NOTES_API_LANG }},DJANGO_SETTINGS_MODULE=notesserver.settings.yaml_config,SERVICE_VARIANT="{{ edx_notes_api_service_name }}",EDXNOTES_CONFIG_ROOT="{{ COMMON_CFG_DIR }}"
+environment={% if COMMON_ENABLE_NEWRELIC_APP %}NEW_RELIC_APP_NAME={{ EDX_NOTES_API_NEWRELIC_APPNAME }},NEW_RELIC_LICENSE_KEY={{ NEWRELIC_LICENSE_KEY }},NEW_RELIC_RULES_IGNORE_URL_REGEXES='{{ ",".join(COMMON_NEWRELIC_IGNORE_REGEXES) }}',{% endif -%}PID=/var/tmp/edx_notes_api.pid,PORT={{ edx_notes_api_gunicorn_port }},ADDRESS={{ edx_notes_api_gunicorn_host }},LANG={{ EDX_NOTES_API_LANG }},DJANGO_SETTINGS_MODULE=notesserver.settings.yaml_config,SERVICE_VARIANT="{{ edx_notes_api_service_name }}",EDXNOTES_CONFIG_ROOT="{{ COMMON_CFG_DIR }}"
 
 stdout_logfile={{ supervisor_log_dir }}/%(program_name)-stdout.log
 stderr_logfile={{ supervisor_log_dir }}/%(program_name)-stderr.log
