@@ -23,7 +23,7 @@
 
 - name: check out the harprofiler
   git:
-    dest: "{{ harprofiler_dir }}"
+    dest: "{{ harprofiler_dir }}/harprofiler"
     repo: "{{ harprofiler_github_url }}"
     version: "{{ harprofiler_version }}"
     accept_hostkey: yes
@@ -54,7 +54,7 @@
 
 - name: install requirements
   pip:
-    requirements: "{{ harprofiler_dir }}/requirements.txt"
+    requirements: "{{ harprofiler_dir }}/harprofiler/requirements.txt"
     virtualenv: "{{ harprofiler_venv_dir }}"
   sudo_user: "{{ harprofiler_user }}"
   tags:
@@ -65,7 +65,7 @@
 # harprofiler ships with a default config file. Doing a line-replace for the default
 # configuration that does not match what this machine will have
   lineinfile:
-    dest: "{{ harprofiler_dir }}/config.yaml"
+    dest: "{{ harprofiler_dir }}/harprofiler/config.yaml"
     regexp: "browsermob_dir"
     line: "browsermob_dir: {{ harprofiler_browsermob_dir }}"
     state: present
