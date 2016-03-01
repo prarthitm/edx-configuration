@@ -33,4 +33,7 @@ RUN sudo /edx/app/edx_ansible/venvs/edx_ansible/bin/ansible-playbook harprofiler
     --extra-vars="HARPROFILER_VERSION=$HARPROFILER_VERSION" \
     --extra-vars="COMMON_GIT_PATH=$REPO_OWNER"
 
-USER root 
+USER root
+
+ENTRYPOINT ["/edx/app/harprofiler/venvs/harprofiler/bin/python", "/edx/app/harprofiler/harprofiler/harprofiler.py"]
+CMD ["--help"]
