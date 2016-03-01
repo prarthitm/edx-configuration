@@ -1,3 +1,17 @@
 #!/usr/bin/env bash
 # Using JSON.stringify forces output of normal JSON, as opposed to Mongo's weird non-compliant extended JSON
 /usr/bin/mongo -u {{ MONGO_ADMIN_USER }} --authenticationDatabase admin -p '{{ MONGO_ADMIN_PASSWORD }}' --quiet <<< 'JSON.stringify(db.serverStatus())'
+
+# This can generate a lot more logging, so only turn it on for environments
+# where you're interested in collection-level statistics
+{% if MONGO_LOG_COLLECTION_STATS %}
+/usr/bin/mongo -u {{ MONGO_ADMIN_USER }} --authenticationDatabase admin -p '{{ MONGO_ADMIN_PASSWORD }}' --quiet <<< '
+rs.slaveOk();
+db.getMongo().getDBNames().forEach(function(database) {
+    if (/^(local|admin)/.test(database))
+        return;
+    thisdb = db.getSiblingDB(database);
+    thisdb.getCollectionNames().forEach(function(collection) {print(JSON.stringify(thisdb[collection].stats()))});
+});
+'
+{% endif %}
