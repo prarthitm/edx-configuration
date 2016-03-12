@@ -3,6 +3,19 @@
 # There is a bug with initializing multiple nodes in the HA cluster at once
 # http://rabbitmq.1065348.n5.nabble.com/Rabbitmq-boot-failure-with-quot-tables-not-present-quot-td24494.html
 
+- name: trust extra repositories
+  apt_key:
+    url: "{{ item.key }}"
+    state: present
+  with_items: "{{ extra_repos }}"
+
+- name: add extra repositories
+  apt_repository:
+    repo: "{{ item.repo }}"
+    state: present
+    update_cache: yes
+  with_items: "{{ extra_repos }}"
+  
 - name: Install python-software-properties if debian
   apt:
     name: "{{ item }}"
