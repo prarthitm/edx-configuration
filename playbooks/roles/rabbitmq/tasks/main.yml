@@ -14,28 +14,32 @@
     repo: "{{ item.repo }}"
     state: present
     update_cache: yes
-  with_items: "{{ extra_repos }}"
-  
-- name: Install python-software-properties if debian
-  apt:
-    name: "{{ item }}"
-    state: present
-  with_items: "{{ rabbitmq_debian_pkgs }}"
+  with_items: extra_repos
+
+- name: install python-software-properties if debian
+  apt: pkg={{ ",".join(rabbitmq_debian_pkgs) }} state=present
 
 - name: Fetch the rabbitmq server deb
   get_url:
     url: "{{ rabbitmq_pkg_url }}"
-    dest: "/var/tmp/{{ rabbitmq_pkg_url | basename }}"
+    dest: "/var/tmp/{{ rabbitmq_pkg_url|basename }}"
 
+# If we don't set pipefail first, `||` will be looking at the exit code of the last command in the pipe
 - name: Check if rabbit is installed
-  shell: 'dpkg -s rabbitmq-server >/dev/null 2>&1 || echo "not installed"'
-  register: is_installed
+  shell: |
+    set -o pipefail
+    dpkg -s rabbitmq-server | grep Version | sed -r 's/.*: (.*)/\1/' || echo 'not installed'
+  args:
+    executable: /bin/bash
+  register: installed_version
+  failed_when: installed_version.stdout is defined and installed_version.stdout not in [RABBITMQ_VERSION, 'not installed']
 
 - name: Install rabbit package using gdebi
   shell: "gdebi --n {{ rabbitmq_pkg_url|basename }}"
   args:
     chdir: /var/tmp
-  when: is_installed.stdout is defined and is_installed.stdout == "not installed"
+  when: installed_version.stdout is defined and installed_version.stdout == "not installed"
+>>>>>>> d65d395... Enforce correct rabbit version installed
 
 - name: Stop rabbit cluster
   service:
