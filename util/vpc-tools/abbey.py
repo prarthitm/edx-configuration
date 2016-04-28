@@ -406,7 +406,9 @@ rm -rf $base_dir
                 cache_id=args.cache_id,
                 datadog_api_key=args.datadog_api_key,
                 region=args.region)
-
+    print '--------USER DATA----------'
+    print user_data
+    print '-------END USER DATA-------'
     mapping = BlockDeviceMapping()
     root_vol = BlockDeviceType(size=args.root_vol_size,
                                volume_type='gp2')
