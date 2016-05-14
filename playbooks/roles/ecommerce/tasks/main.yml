@@ -20,11 +20,26 @@
 # Example play:
 #
 #
+
+# Copy themes directories.
+# When synchronizing we need to make sure that directory path ends with a trailing slash,
+# otherwise synchronize will copy the src directory instead of the files/dirs included within the src directory
+- name: synchronize theme directories
+  command: "rsync -a {{ THEMES_CODE_DIR }}/{{ ECOMMERCE_THEMES_DIR_NAME }}/ {{ ECOMMERCE_COMPREHENSIVE_THEME_DIR }}"
+  sudo_user: "{{ ecommerce_user }}"
+  when: ECOMMERCE_ENABLE_COMPREHENSIVE_THEMING and THEMES_CODE_DIR is defined
+  tags:
+    - install
+    - install:app-requirements
+
 - name: "add gunicorn configuration file"
   template: >
     src=edx/app/ecommerce/ecommerce_gunicorn.py.j2
     dest={{ ecommerce_home }}/ecommerce_gunicorn.py
   sudo_user: "{{ ecommerce_user }}"
+  tags:
+    - install
+    - install:configuration
 
 - name: install application requirements
   pip: >
@@ -33,23 +48,35 @@
     state=present
   sudo_user: "{{ ecommerce_user }}"
   with_items: ecommerce_requirements
+  tags:
+    - install
+    - install:app-requirements
 
 - name: create nodeenv
   shell: >
     creates={{ ecommerce_nodeenv_dir }}
     {{ ecommerce_venv_dir }}/bin/nodeenv {{ ecommerce_nodeenv_dir }} --prebuilt
   sudo_user: "{{ ecommerce_user }}"
+  tags:
+    - install
+    - install:system-requirements
 
 - name: install node dependencies
   npm: executable={{ ecommerce_nodeenv_bin }}/npm path={{ ecommerce_code_dir }} production=yes
   sudo_user: "{{ ecommerce_user }}"
   environment: "{{ ecommerce_environment }}"
+  tags:
+    - install
+    - install:app-requirements
 
 - name: install bower dependencies
   shell: >
     chdir={{ ecommerce_code_dir }}
     . {{ ecommerce_nodeenv_bin }}/activate && {{ ecommerce_node_bin }}/bower install --production --config.interactive=false
   sudo_user: "{{ ecommerce_user }}"
+  tags:
+    - install
+    - install:app-requirements
 
 - name: migrate
   shell: >
@@ -60,6 +87,9 @@
   sudo_user: "{{ ecommerce_user }}"
   environment: "{{ ecommerce_environment }}"
   when: migrate_db is defined and migrate_db|lower == "yes"
+  tags:
+    - migrate
+    - migrate:db
 
 - name: populate countries
   shell: >
@@ -77,6 +107,9 @@
   failed_when:
     - "'You already have countries in your database' not in command_result.stderr"
     - "command_result.rc != 0"
+  tags:
+    - migrate
+    - migrate:db
 
 - name: compile sass
   shell: >
@@ -87,6 +120,9 @@
   with_items:
     - "update_assets --skip-collect"
   when: not devstack
+#  tags:
+#    - assets
+#    - assets:gather
 
 - name: run r.js optimizer
   shell: >
@@ -94,6 +130,9 @@
     . {{ ecommerce_nodeenv_bin }}/activate && {{ ecommerce_node_bin }}/r.js -o build.js
   sudo_user: "{{ ecommerce_user }}"
   when: not devstack
+  tags:
+    - assets
+    - assets:gather
 
 - name: run collectstatic
   shell: >
@@ -105,18 +144,38 @@
     - "collectstatic --noinput"
     - "compress"
   when: not devstack
+  tags:
+    - assets
+    - assets:gather
 
 - name: write out the supervisor wrapper
   template: >
     src=edx/app/ecommerce/ecommerce.sh.j2
     dest={{ ecommerce_home }}/{{ ecommerce_service_name }}.sh
     mode=0650 owner={{ supervisor_user }} group={{ common_web_user }}
+  tags:
+    - install
+    - install:configuration
 
 - name: write supervisord config
   template: >
     src=edx/app/supervisor/conf.d.available/ecommerce.conf.j2
     dest="{{ supervisor_available_dir }}/{{ ecommerce_service_name }}.conf"
     owner={{ supervisor_user }} group={{ common_web_user }} mode=0644
+  tags:
+    - install
+    - install:configuration
+
+- name: write devstack script
+  template:
+    src: "edx/app/ecommerce/devstack.sh.j2"
+    dest: "{{ ecommerce_home }}/devstack.sh"
+    owner: "{{ supervisor_user }}"
+    group: "{{ common_web_user }}"
+    mode: 0744
+  tags:
+    - devstack
+    - devstack:install
 
 - name: setup the ecommence env file
   template: >
@@ -125,6 +184,9 @@
     owner={{ ecommerce_user }}
     group={{ ecommerce_user }}
     mode=0644
+  tags:
+    - install
+    - install:configuration
 
 - name: enable supervisor script
   file: >
@@ -133,20 +195,29 @@
     state=link
     force=yes
   when: not disable_edx_services
+  tags:
+    - install
+    - install:configuration
 
 - name: update supervisor configuration
   shell: "{{ supervisor_ctl }} -c {{ supervisor_cfg }} update"
   when: not disable_edx_services
+  tags:
+    - manage
+    - manage:start
 
-- name: create symlinks from the-er venv bin dir
+- name: create symlinks from the venv bin dir
   file: >
     src="{{ ecommerce_venv_dir }}/bin/{{ item }}"
     dest="{{ COMMON_BIN_DIR }}/{{ item.split('.')[0] }}.ecommerce"
     state=link
   with_items:
-  - python
-  - pip
-  - django-admin.py
+    - python
+    - pip
+    - django-admin.py
+  tags:
+    - install
+    - install:app-requirements
 
 - name: create symlinks from the repo dir
   file: >
@@ -154,7 +225,10 @@
     dest="{{ COMMON_BIN_DIR }}/{{ item.split('.')[0] }}.ecommerce"
     state=link
   with_items:
-  - manage.py
+    - manage.py
+  tags:
+    - install
+    - install:app-requirements
 
 - name: restart the applicaton
   supervisorctl: >
@@ -164,3 +238,6 @@
     name={{ ecommerce_service_name }}
   when: not disable_edx_services
   sudo_user: "{{ supervisor_service_user }}"
+  tags:
+    - manage
+    - manage:start
