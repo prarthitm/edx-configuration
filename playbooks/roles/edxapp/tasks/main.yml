@@ -78,11 +78,11 @@
     - install:base
     
 # adding chris-lea nodejs repo
-- name: add ppas for current versions of nodejs
-  apt_repository: repo="{{ edxapp_chrislea_ppa }}"
-  tags:
-    - install
-    - install:base
+#- name: add ppas for current versions of nodejs
+#  apt_repository: repo="{{ edxapp_chrislea_ppa }}"
+#  tags:
+#    - install
+#    - install:base
   
 - name: install system packages on which LMS and CMS rely
   apt: pkg={{','.join(edxapp_debian_pkgs)}} state=present update_cache=yes
