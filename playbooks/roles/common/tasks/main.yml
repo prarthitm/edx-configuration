@@ -44,7 +44,7 @@
 # Ensure that we get a current version of Git and latest version of python 2.7
 # GitHub requires version 1.7.10 or later
 # https://help.github.com/articles/https-cloning-errors
-- name: Add git apt repository
+- name: Add git apt repository foo
   apt_repository:
     repo: "{{ item }}"
   with_items:
