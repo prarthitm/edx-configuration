@@ -49,7 +49,6 @@
     repo: "{{ item }}"
   with_items:
     - "{{ common_git_ppa }}"
-    - "{{ COMMON_EDX_PPA }}"
   when: ansible_distribution in common_debian_variants
 
 - name: Install role-independent useful system packages
