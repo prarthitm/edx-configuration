@@ -10,7 +10,7 @@
 FROM edxops/trusty-common:latest
 MAINTAINER edxops
 
-ENV ECOMMERCE_VERSION=master
+ENV ECOMMERCE_VERSION=clintonb/devstack
 ENV REPO_OWNER=edx
 
 ADD . /edx/app/edx_ansible/edx_ansible
