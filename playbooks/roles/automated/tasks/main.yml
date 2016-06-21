@@ -99,7 +99,7 @@
   file:
     path: "{{ automated_home }}/.ssh"
     state: "directory"
-    mode: "0700"
+    mode: "0400"
     owner: "{{ automated_user }}"
     group: "{{ automated_user }}"
 
@@ -108,8 +108,17 @@
     src: "home/automator/.ssh/authorized_keys.j2"
     dest: "{{ automated_home }}/.ssh/authorized_keys"
     mode: "0600"
-    owner: "{{ automated_user }} group={{ automated_user }}"
+    owner: "{{ automated_user }}"
+    group: "{{ automated_user }}"
 
+- name: Build know_hosts file
+  file:
+    path: "{{ automated_home }}/.ssh/known_hosts"
+    state: "file"
+    mode: "0755"
+    owner: "{{ automated_user }}"
+    group: "{{ automated_user }}"
+  
 - name: Create allowed command links
   file:
     src: "{{ item }}"
