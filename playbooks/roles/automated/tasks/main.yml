@@ -95,14 +95,6 @@
     owner: "root"
     group: "{{ automated_user }}"
 
-- name: Re-write .bashrc
-  copy:
-    src: "home/automator/.bashrc"
-    dest: "{{ automated_home }}/.bashrc"
-    owner: "root"
-    group: "{{ automated_user }}"
-    mode: "0744"
-
 - name: Create .ssh directory
   file:
     path: "{{ automated_home }}/.ssh"
