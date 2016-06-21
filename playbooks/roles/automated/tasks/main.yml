@@ -47,8 +47,11 @@
 
 - name: Create automated user
   user:
-    name={{ automated_user }} state=present shell=/bin/rbash
-    home={{ automated_home }} createhome=yes
+    name: "{{ automated_user }}"
+    state: "present"
+    shell: "/bin/rbash"
+    home: "{{ automated_home }}"
+    createhome: "yes"
 
 - name: Create sudoers file from template
   copy:
