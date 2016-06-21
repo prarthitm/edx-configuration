@@ -45,70 +45,88 @@
 - fail: automated_authorized_keys required for role
   when: automated_authorized_keys is not defined
 
-- name: create automated user
+- name: Create automated user
   user:
     name={{ automated_user }} state=present shell=/bin/rbash
     home={{ automated_home }} createhome=yes
 
-- name: create sudoers file from template
+- name: Create sudoers file from template
   copy:
-    dest=/etc/sudoers.d/{{ automated_sudoers_template|basename|replace('.j2','') }}
-    src={{ automated_sudoers_template }} owner="root"
-    group="root" mode=0440 validate='visudo -cf %s'
+    dest: "/etc/sudoers.d/{{ automated_sudoers_template|basename|replace('.j2','') }}"
+    src: "{{ automated_sudoers_template }}"
+    owner: "root"
+    group: "root"
+    mode: "0440"
+    validate: 'visudo -cf %s'
   when: automated_sudoers_template
 
   #
   # Prevent user from updating their PATH and
   # environment.
   #
-- name: update shell file mode
+- name: Update shell file mode
   file:
-    path={{ automated_home }}/{{ item }} mode=0640
-    state=file owner="root" group={{ automated_user }}
+    path: "{{ automated_home }}/{{ item }}"
+    mode: "0640"
+    state: "file"
+    owner: "root"
+    group: "{{ automated_user }}"
   with_items:
     - .bashrc
     - .profile
     - .bash_logout
 
-- name: change ~automated ownership
+- name: Change ~automated ownership
   file:
-    path={{ automated_home }} mode=0750 state=directory
-    owner="root" group={{ automated_user }}
+    path: "{{ automated_home }}"
+    mode: "0750"
+    state: "directory"
+    owner: "root"
+    group: "{{ automated_user }}"
 
-- name: create ~automated/bin directory
+- name: Create ~automated/bin directory
   file:
-    path={{ automated_home }}/bin state=directory mode=0750
-    owner="root" group={{ automated_user }}
+    path: "{{ automated_home }}/bin"
+    state: "directory"
+    mode: "0750"
+    owner: "root"
+    group: "{{ automated_user }}"
 
-- name: re-write .profile
+- name: Re-write .profile
   copy:
-    src=home/automator/.profile
-    dest={{ automated_home }}/.profile
-    owner="root"
-    group={{ automated_user }}
-    mode="0744"
+    src: "home/automator/.profile"
+    dest: "{{ automated_home }}/.profile"
+    owner: "root"
+    group: "{{ automated_user }}"
+    mode: "0744"
 
-- name: re-write .bashrc
+- name: Re-write .bashrc
   copy:
-    src=home/automator/.bashrc
-    dest={{ automated_home }}/.bashrc
-    owner="root"
-    group={{ automated_user }}
-    mode="0744"
+    src: "home/automator/.bashrc"
+    dest: "{{ automated_home }}/.bashrc"
+    owner: "root"
+    group: "{{ automated_user }}"
+    mode: "0744"
 
-- name: create .ssh directory
+- name: Create .ssh directory
   file:
-    path={{ automated_home }}/.ssh state=directory mode=0700
-    owner={{ automated_user }} group={{ automated_user }}
+    path: "{{ automated_home }}/.ssh"
+    state: "directory"
+    mode: "0700"
+    owner: "{{ automated_user }}"
+    group: "{{ automated_user }}"
 
-- name: build authorized_keys file
+- name: Build authorized_keys file
   template:
-    src=home/automator/.ssh/authorized_keys.j2
-    dest={{ automated_home }}/.ssh/authorized_keys mode=0600
-    owner={{ automated_user }} group={{ automated_user }}
+    src: "home/automator/.ssh/authorized_keys.j2"
+    dest: "{{ automated_home }}/.ssh/authorized_keys"
+    mode: "0600"
+    owner: "{{ automated_user }} group={{ automated_user }}"
 
-- name: create allowed command links
+- name: Create allowed command links
   file:
-    src={{ item }} dest={{ automated_home }}/bin/{{ item.split('/').pop() }}
-    state=link
-  with_items: automated_rbash_links
+    src: "{{ item }}"
+    dest: "{{ automated_home }}/bin/{{ item.split('/').pop() }}"
+    state: "link"
+  with_items:
+    - automated_rbash_links
