@@ -1,0 +1,3 @@
+{% for command in AUTOMATED_SUDO_COMMANDS %}
+%{{ AUTOMATED_USER }} ALL=({{ command.sudo_user }}) SETENV:NOPASSWD:{{ command.command }}
+{% endfor %}

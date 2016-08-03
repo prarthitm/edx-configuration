@@ -15,12 +15,12 @@
 # vars are namespace with the module name.
 #
 automated_role_name: automated
-automated_user: "changeme"
-automated_home: "/home/{{ automated_user }}"
-automated_rbash_links: !!null
-automated_sudoers_template: !!null
+AUTOMATED_USER: "changeme"
+automated_home: "/home/{{ AUTOMATED_USER }}"
+AUTOMATED_RBASH_LINKS: !!null
+AUTOMATED_SUDOERS_TEMPLATE: !!null
 
-  #
+#
 # OS packages
 #
 

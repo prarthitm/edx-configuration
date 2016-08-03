@@ -40,28 +40,29 @@
 #
 
 - fail: automated_rbash_links required for role
-  when: automated_rbash_links is not defined
+  when: AUTOMATED_RBASH_LINKS is not defined
 
 - fail: automated_authorized_keys required for role
-  when: automated_authorized_keys is not defined
+  when: AUTOMATED_AUTHORIZED_KEYS is not defined
 
 - name: Create automated user
   user:
-    name: "{{ automated_user }}"
+    name: "{{ AUTOMATED_USER }}"
     state: "present"
     shell: "/bin/rbash"
     home: "{{ automated_home }}"
     createhome: "yes"
 
 - name: Create sudoers file from template
-  copy:
-    dest: "/etc/sudoers.d/{{ automated_sudoers_template|basename|replace('.j2','') }}"
-    src: "{{ automated_sudoers_template }}"
+  template:
+    dest: "/etc/sudoers.d/{{ AUTOMATED_SUDOERS_TEMPLATE|basename|replace('.j2','') }}"
+    #dest: "/tmp/foo"
+    src: "{{ AUTOMATED_SUDOERS_TEMPLATE }}"
     owner: "root"
     group: "root"
     mode: "0440"
     validate: 'visudo -cf %s'
-  when: automated_sudoers_template
+  when: AUTOMATED_SUDOERS_TEMPLATE
 
   #
   # Prevent user from updating their PATH and
@@ -73,7 +74,7 @@
     mode: "0640"
     state: "file"
     owner: "root"
-    group: "{{ automated_user }}"
+    group: "{{ AUTOMATED_USER }}"
   with_items:
     - .bashrc
     - .profile
@@ -85,7 +86,7 @@
     mode: "0750"
     state: "directory"
     owner: "root"
-    group: "{{ automated_user }}"
+    group: "{{ AUTOMATED_USER }}"
 
 - name: Create ~automated/bin directory
   file:
@@ -93,36 +94,35 @@
     state: "directory"
     mode: "0750"
     owner: "root"
-    group: "{{ automated_user }}"
+    group: "{{ AUTOMATED_USER }}"
 
 - name: Create .ssh directory
   file:
     path: "{{ automated_home }}/.ssh"
     state: "directory"
     mode: "0400"
-    owner: "{{ automated_user }}"
-    group: "{{ automated_user }}"
+    owner: "{{ AUTOMATED_USER }}"
+    group: "{{ AUTOMATED_USER }}"
 
 - name: Build authorized_keys file
   template:
     src: "home/automator/.ssh/authorized_keys.j2"
     dest: "{{ automated_home }}/.ssh/authorized_keys"
     mode: "0600"
-    owner: "{{ automated_user }}"
-    group: "{{ automated_user }}"
+    owner: "{{ AUTOMATED_USER }}"
+    group: "{{ AUTOMATED_USER }}"
 
 - name: Build know_hosts file
   file:
     path: "{{ automated_home }}/.ssh/known_hosts"
-    state: "file"
+    state: "touch"
     mode: "0755"
-    owner: "{{ automated_user }}"
-    group: "{{ automated_user }}"
+    owner: "{{ AUTOMATED_USER }}"
+    group: "{{ AUTOMATED_USER }}"
   
 - name: Create allowed command links
   file:
     src: "{{ item }}"
     dest: "{{ automated_home }}/bin/{{ item.split('/').pop() }}"
     state: "link"
-  with_items:
-    - automated_rbash_links
+  with_items: AUTOMATED_RBASH_LINKS
