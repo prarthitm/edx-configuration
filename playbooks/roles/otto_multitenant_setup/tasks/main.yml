@@ -1,0 +1,39 @@
+---
+#
+# edX Configuration
+#
+# github:     https://github.com/edx/configuration
+# wiki:       https://openedx.atlassian.net/wiki/display/OpenOPS
+# code style: https://openedx.atlassian.net/wiki/display/OpenOPS/Ansible+Code+Conventions
+# license:    https://github.com/edx/configuration/blob/master/LICENSE.TXT
+#
+#
+#
+# Tasks for role otto_multitenant_setup
+#
+# Overview:
+#
+#
+# Dependencies:
+#
+#
+# Example play:
+#
+#
+
+- name: Setup Site and Site Configurations for Otto
+  shell: >
+    {{ COMMON_BIN_DIR }}/python.ecommerce {{ COMMON_BIN_DIR }}/manage.ecommerce create_or_update_site
+    --settings=ecommerce.settings.production
+    --site-domain='ecommerce-{{ EDXAPP_LMS_BASE }}'
+    --site-name='ecommerce-{{ EDXAPP_LMS_BASE }}'
+    --partner-code='edx'
+    --partner-name='edx'
+    --lms-url-root='https://{{ EDXAPP_LMS_BASE }}'
+    --theme-scss-path='sass'
+    --payment-processors='cybersource,paypal'
+    --client-id='ecommerce-key'
+    --client-secret='ecommerce-secret'
+    --from-email='sandbox-notifications@edx.org'
+  become_user: "{{ ecommerce_user }}"
+  environment: "{{ ecommerce_environment }}"

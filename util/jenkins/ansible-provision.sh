@@ -377,6 +377,8 @@ if [[ $run_oauth == "true" ]]; then
     run_ansible oauth_client_setup.yml -i "${deploy_host}," $extra_var_arg --user ubuntu
 fi
 
+run_ansible otto_multitenant_setup.yml -i "${deploy_host}," -e hostname_fqdn=${deploy_host} --user ubuntu
+
 # set the hostname
 run_ansible set_hostname.yml -i "${deploy_host}," -e hostname_fqdn=${deploy_host} --user ubuntu
 
