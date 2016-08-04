@@ -26,10 +26,10 @@
     {{ COMMON_BIN_DIR }}/python.ecommerce {{ COMMON_BIN_DIR }}/manage.ecommerce create_or_update_site
     --settings=ecommerce.settings.production
     --site-domain='ecommerce-{{ EDXAPP_LMS_BASE }}'
-    --site-name='ecommerce-{{ EDXAPP_LMS_BASE }}'
+    --site-name='ecommerce-{{ ECOMMERCE_ECOMMERCE_URL_ROOT }}'
     --partner-code='edx'
     --partner-name='edx'
-    --lms-url-root='https://{{ EDXAPP_LMS_BASE }}'
+    --lms-url-root='{{ ECOMMERCE_LMS_URL_ROOT }}'
     --theme-scss-path='sass'
     --payment-processors='cybersource,paypal'
     --client-id='ecommerce-key'
