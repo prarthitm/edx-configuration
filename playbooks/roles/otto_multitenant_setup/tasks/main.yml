@@ -20,6 +20,13 @@
 # Example play:
 #
 #
+- debug: msg="Vars from otto_multitenant_setup role"
+- debug: msg="COMMON_BIN_DIR - {{ COMMON_BIN_DIR }}"
+- debug: msg="EDXAPP_LMS_BASE - {{ EDXAPP_LMS_BASE }}"
+- debug: msg="ECOMMERCE_ECOMMERCE_URL_ROOT - {{ ECOMMERCE_ECOMMERCE_URL_ROOT }}"
+- debug: msg="ecommerce_user - {{ ecommerce_user }}"
+- debug: msg="ecommerce_environment - {{ ecommerce_environment }}"
+- debug: msg="EDXAPP_SITE_NAME - {{ EDXAPP_SITE_NAME }}"
 
 - name: Setup Site and Site Configurations for Otto
   shell: >
