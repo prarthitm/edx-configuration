@@ -27,20 +27,29 @@
 - debug: msg="ecommerce_user - {{ ecommerce_user }}"
 - debug: msg="ecommerce_environment - {{ ecommerce_environment }}"
 - debug: msg="EDXAPP_SITE_NAME - {{ EDXAPP_SITE_NAME }}"
+- debug: msg="ECOMMERCE_LMS_URL_ROOT - {{ ECOMMERCE_LMS_URL_ROOT }}"
+
+- debug: msg="from Defaults"
+- debug: msg="COMMON_BIN_DIR - {{ COMMON_BIN_DIR }}"
+- debug: msg="ECOMMERCE_LMS_DOMAIN - {{ ECOMMERCE_LMS_DOMAIN }}"
+- debug: msg="ecommerce_user - {{ ecommerce_user }}"
+- debug: msg="ecommerce_environment - {{ ecommerce_environment }}"
+- debug: msg="ECOMMERCE_DOMAIN - {{ ECOMMERCE_DOMAIN }}"
+- debug: msg="ECOMMERCE_LMS_URL_ROOT - {{ ECOMMERCE_LMS_URL_ROOT }}"
 
 - name: Setup Site and Site Configurations for Otto
   shell: >
     {{ COMMON_BIN_DIR }}/python.ecommerce {{ COMMON_BIN_DIR }}/manage.ecommerce create_or_update_site
     --settings=ecommerce.settings.production
-    --site-domain='ecommerce-{{ EDXAPP_LMS_BASE }}'
-    --site-name='ecommerce-{{ ECOMMERCE_ECOMMERCE_URL_ROOT }}'
-    --partner-code='edx'
-    --partner-name='edx'
+    --site-domain='{{ ECOMMERCE_DOMAIN }}'
+    --site-name='{{ ECOMMERCE_DOMAIN }}'
+    --partner-code='{{ ECOMMERCE_PARTNER_CODE }}'
+    --partner-name='{{ ECOMMERCE_PARTNER_NAME }}'
     --lms-url-root='{{ ECOMMERCE_LMS_URL_ROOT }}'
     --theme-scss-path='sass'
     --payment-processors='cybersource,paypal'
-    --client-id='ecommerce-key'
-    --client-secret='ecommerce-secret'
+    --client-id='{{ ECOMMERCE_CLIENT_ID }}'
+    --client-secret='{{ ECOMMERCE_CLIENT_SCRET }}'
     --from-email='sandbox-notifications@edx.org'
   become_user: "{{ ecommerce_user }}"
   environment: "{{ ecommerce_environment }}"

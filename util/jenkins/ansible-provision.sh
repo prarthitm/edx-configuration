@@ -377,14 +377,6 @@ if [[ $run_oauth == "true" ]]; then
     run_ansible oauth_client_setup.yml -i "${deploy_host}," $extra_var_arg --user ubuntu
 fi
 
-echo "Vars from otto_multitenant_setup edx-east/task"
-echo "COMMON_BIN_DIR - $COMMON_BIN_DIR"
-echo "EDXAPP_LMS_BASE - $EDXAPP_LMS_BASE"
-echo "ECOMMERCE_ECOMMERCE_URL_ROOT - $ECOMMERCE_ECOMMERCE_URL_ROOT"
-echo "ecommerce_user - $ecommerce_user"
-echo "ecommerce_environment - $ecommerce_environment"
-echo "EDXAPP_SITE_NAME - $EDXAPP_SITE_NAME"
-
 run_ansible otto_multitenant_setup.yml -i "${deploy_host}," -e hostname_fqdn=${deploy_host} --user ubuntu
 
 # set the hostname
