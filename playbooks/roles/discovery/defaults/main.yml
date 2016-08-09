@@ -199,5 +199,7 @@ discovery_debian_pkgs:
   - libssl-dev
   - libffi-dev  # Needed to install the Python cryptography library for asymmetric JWT signing
   - libmemcached-dev # Needed for pylibmc
+  - libxml2-dev
+  - libxslt-dev
 
 discovery_redhat_pkgs: []
