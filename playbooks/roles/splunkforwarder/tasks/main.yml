@@ -98,6 +98,25 @@
   when: download_deb.changed and create_boot_script.changed
   notify: restart splunkforwarder
 
+- name: Write SSL certs to disk
+  copy:
+    dest: "{{ splunkforwarder_output_dir }}/{{ splunkforwarder_ssl_cert_path }}/{{ COMMON_DEPLOYMENT }}-{{ item.target_group }}.pem"
+    content: "{{ item.ssl_cert }}"
+    owner: splunk
+    group: splunk
+    mode: "0400"
+  when: "{{ item.ssl_cert is defined }}"
+  with_items: SPLUNKFORWARDER_SERVERS
+
+- name: Write root CA to disk
+  copy:
+    dest: "{{ splunkforwarder_output_dir }}/{{ splunkforwarder_ssl_cert_path }}/cacert.pem"
+    content: "{{ SPLUNKFORWARDER_ROOT_CA }}"
+    owner: splunk
+    group: splunk
+    mode: "0400"
+  when: SPLUNKFORWARDER_ROOT_CA is defined
+
 - name: Create inputs and outputs configuration
   template:
     src: "opt/splunkforwarder/etc/system/local/{{ item }}.conf.j2"

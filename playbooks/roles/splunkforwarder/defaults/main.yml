@@ -20,10 +20,22 @@ SPLUNKFORWARDER_PACKAGE_URL: !!null
 SPLUNKFORWARDER_DEB: !!null
 SPLUNKFORWARDER_PASSWORD: !!null
 
+# A list of dicts with the following keys:
+#   target_group: the name of the group
+#   server: the hostname/IP address of the splunk server
+#   default: whether this group is the default logging group
+#
+# The following keys are for use with SSL. They must all be defined to enable SSL.
+#   ssl_cert: text of the SSL cert to use
+#   ssl_password: the password of the cert
+#   ssl_common_name: the hostname associated with the cert
 SPLUNKFORWARDER_SERVERS:
   - target_group: "default_output_server"
     server: "localhost:9997"
     default: true
+
+# The signing CA cert for the certs used in SPLUNKFORWARDER_SERVERS
+SPLUNKFORWARDER_ROOT_CA: !!null
 
 SPLUNKFORWARDER_LOG_ITEMS:
   - source: '{{ COMMON_LOG_DIR }}/lms'
@@ -60,3 +72,4 @@ splunk_debian_pkgs:
 splunk_redhat_pkgs: []
 
 splunkforwarder_output_dir: '/opt/splunkforwarder/'
+splunkforwarder_ssl_cert_path: 'etc/auth/edxcerts'
