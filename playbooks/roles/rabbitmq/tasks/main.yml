@@ -17,7 +17,10 @@
   with_items: extra_repos
 
 - name: install python-software-properties if debian
-  apt: pkg={{ ",".join(rabbitmq_debian_pkgs) }} state=present
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ rabbitmq_debian_pkgs }}"
 
 - name: Fetch the rabbitmq server deb
   get_url:
