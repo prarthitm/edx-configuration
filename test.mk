@@ -24,8 +24,7 @@ test.syntax.jinja/%:
 	cd playbooks && python ../tests/jinja_check.py ../$*
 
 test.syntax.dockerfiles:
-	set -euo pipefail; \
-	$(shell echo $(images) | python util/check_dockerfile_coverage.py)
-
+	python util/check_dockerfile_coverage.py "$(images)"
+	
 test.edx_east_roles:
 	tests/test_edx_east_roles.sh
