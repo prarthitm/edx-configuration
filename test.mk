@@ -25,7 +25,7 @@ test.syntax.jinja/%:
 
 test.syntax.dockerfiles:
 	set -euo pipefail; \
-	$(shell $(images) | python util/check_dockerfile_coverage.py)
+	$(shell echo $(images) | python util/check_dockerfile_coverage.py)
 
 test.edx_east_roles:
 	tests/test_edx_east_roles.sh
