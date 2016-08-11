@@ -54,6 +54,16 @@
     - install
     - install:code
 
+- name: wtf
+  debug:
+    var: "{{ item.QUEUE_CONFIG.HANDLERS[0].CODEJAIL }}"
+  with_items: "{{ XQWATCHER_COURSES }}"
+
+- name: wtf
+  debug:
+    msg: "{{ item.QUEUE_CONFIG.HANDLERS[0].CODEJAIL }}"
+  with_items: "{{ XQWATCHER_COURSES }}"
+
 - name: Write out requirements.txt
   template:
     src: "edx/app/xqwatcher/data/requirements.txt.j2"
