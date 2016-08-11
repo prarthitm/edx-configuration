@@ -46,6 +46,6 @@ if __name__ == '__main__':
     images = docker_images.read_input()
 
     # get images that are used and described in configuration file
-    used_images = docker_images.get_used_images()
+    used_images = docker_images.get_used_images(images)
 
     check_coverage(images, used_images)
