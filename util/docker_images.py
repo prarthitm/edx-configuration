@@ -34,20 +34,3 @@ def get_used_images(images):
 
     # performs intersection between weighted images and input images
     return [x for x in weights_list if x[0] in images]
-
-def read_input():
-    """
-    Reads input from standard input.
-    """
-
-    images = []
-
-    # get images from standard in
-    for line in sys.stdin:
-        line = line.strip()
-        line = line.strip("[]")
-
-        items = line.split()
-        images.extend(items)
-
-    return images
