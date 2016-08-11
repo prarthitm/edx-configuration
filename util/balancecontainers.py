@@ -44,6 +44,23 @@ def pack_shards(used_images, num_shards):
 
     return shards
 
+def read_input():
+    """
+    Reads input from standard input.
+    """
+
+    images = []
+
+    # get images from standard in
+    for line in sys.stdin:
+        line = line.strip()
+        line = line.strip("[]")
+
+        items = line.split()
+        images.extend(items)
+
+    return images
+
 def arg_parse():
 
     parser = argparse.ArgumentParser(description = 'Given a list of containers as input and a number of shards, '
@@ -61,7 +78,7 @@ if __name__ == '__main__':
     logging.basicConfig()
 
     # get input from standard in
-    images = docker_images.read_input()
+    images = read_input()
 
     # get images that are used and described in configuration file
     used_images = docker_images.get_used_images(images)
