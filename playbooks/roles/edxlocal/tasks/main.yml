@@ -2,6 +2,13 @@
 #
 ---
 
+- set_fact:
+    mysql_user_host: "{{ EDXAPP_MYSQL_HOST }}"
+
+- set_fact:
+    mysql_user_host: '%'
+  when: EDXAPP_MYSQL_HOST != 'localhost'
+  
 - name: install packages needed for single server
   apt: pkg={{ item }} install_recommends=yes state=present
   with_items: edxlocal_debian_pkgs
@@ -20,6 +27,7 @@
   mysql_user:
     name: "{{ item.user }}"
     password: "{{ item.pass }}"
+    host: "{{ mysql_user_host }}"
     priv: "{{ item.db }}.*:ALL"
   when: item.db != None and item.db != ''
   with_items: "{{ edxlocal_database_users }}"
@@ -28,6 +36,7 @@
   mysql_user:
     name: "{{ COMMON_MYSQL_MIGRATE_USER }}"
     password: "{{ COMMON_MYSQL_MIGRATE_PASS }}"
+    host: "{{ mysql_user_host }}"
     priv: "{{ item }}.*:ALL"
     append_privs: yes
   when: item != None and item != ''
@@ -37,6 +46,7 @@
   mysql_user: >
     name=api001
     password="{{ ANALYTICS_API_DATABASES.default.PASSWORD }}"
+    host="{{ mysql_user_host }}"
     priv='{{ ANALYTICS_API_DATABASES.default.NAME }}.*:ALL/reports.*:SELECT'
   when: ANALYTICS_API_SERVICE_CONFIG is defined
 
@@ -44,6 +54,7 @@
   mysql_user: >
     name=reports001
     password="{{ ANALYTICS_API_DATABASES.reports.PASSWORD }}"
+    host="{{ mysql_user_host }}"
     priv='{{ ANALYTICS_API_DATABASES.reports.NAME }}.*:SELECT'
   when: ANALYTICS_API_SERVICE_CONFIG is defined
 
@@ -58,6 +69,7 @@
   mysql_user: >
     name={{ EDX_NOTES_API_MYSQL_DB_USER }}
     password={{ EDX_NOTES_API_MYSQL_DB_PASS }}
+    host={{ mysql_user_host }}
     priv='{{ EDX_NOTES_API_MYSQL_DB_NAME }}.*:SELECT,INSERT,UPDATE,DELETE'
   when: EDX_NOTES_API_MYSQL_DB_USER is defined
 
@@ -66,12 +78,14 @@
   mysql_user: >
     name={{ COMMON_MYSQL_READ_ONLY_USER }}
     password={{ COMMON_MYSQL_READ_ONLY_PASS }}
+    host={{ mysql_user_host }}
     priv='*.*:ALL'
 
 - name: setup the admin db user
   mysql_user: >
     name={{ COMMON_MYSQL_ADMIN_USER }}
     password={{ COMMON_MYSQL_ADMIN_PASS }}
+    host={{ mysql_user_host }}
     priv='*.*:CREATE USER'
 
 

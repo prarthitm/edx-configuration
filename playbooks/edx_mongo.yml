@@ -1,0 +1,10 @@
+---
+
+# Example configuration for multi-server community installs of mongo
+
+- name: Deploy MongoDB
+  hosts: all
+  sudo: True
+  gather_facts: True
+  roles:
+  - mongo
