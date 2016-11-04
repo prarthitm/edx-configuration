@@ -31,15 +31,18 @@
       - lms
     - role: mysql
       when: EDXAPP_MYSQL_HOST == 'localhost'
-    - edxlocal
+    - role: edxlocal
+      when: EDXAPP_MYSQL_HOST == 'localhost'
     - role: mongo
       when: "'localhost' in EDXAPP_MONGO_HOSTS"
     - { role: 'rabbitmq', rabbitmq_ip: '127.0.0.1' }
     - { role: 'edxapp', celery_worker: True }
     - edxapp
     - notifier
-    - analytics_api
-    - insights
+    - role: analytics_api
+      when: EDXAPP_MYSQL_HOST == 'localhost'
+    - role: insights
+      when: EDXAPP_MYSQL_HOST == 'localhost'
     # not ready yet: - edx_notes_api
     - demo
     - oauth_client_setup
