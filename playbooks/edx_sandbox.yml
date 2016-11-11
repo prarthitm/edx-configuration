@@ -41,6 +41,7 @@
     - analytics_api
     - insights
     # not ready yet: - edx_notes_api
+    - { role: 'demo', tags: [ 'demo_course' ] }
     - oauth_client_setup
     - oraclejdk
     - role: elasticsearch
