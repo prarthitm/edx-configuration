@@ -27,8 +27,8 @@
     - oraclejdk
     - elasticsearch
     - forum
-    - ecommerce
-    - ecomworker
+    - { role: ecommerce, tags: [ 'ecommerce' ] }
+    - { role: ecomworker, tags: [ 'ecomworker' ] }
     - programs
     - role: notifier
       NOTIFIER_DIGEST_TASK_INTERVAL: "5"
