@@ -47,8 +47,10 @@
     - role: ecomworker
       when: SANDBOX_ENABLE_ECOMMERCE
     - notifier
-    - analytics_api
-    - insights
+    - role: analytics_api
+      when: EDXAPP_MYSQL_HOST == 'localhost'
+    - role: insights
+      when: EDXAPP_MYSQL_HOST == 'localhost'
     # not ready yet: - edx_notes_api
     - { role: 'demo', tags: [ 'demo_course' ] }
     - oauth_client_setup
