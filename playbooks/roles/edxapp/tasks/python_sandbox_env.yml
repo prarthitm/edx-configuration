@@ -18,12 +18,12 @@
   when: so3.stat.exists == true 
 
 # TODO: Switch to using alternatives module in 1.6
-- name: code sandbox | Use liblapac for 3gf
+- name: code sandbox | Use liblapac for 3gf (Ubuntu 12)
   command: update-alternatives --set liblapack.so.3gf /usr/lib/lapack/liblapack.so.3gf
   when: so3gf.stat.isdir is defined and not so3gf.stat.isdir 
 
-- name: code sandbox | Use liblapac for 3gf
-  command: update-alternatives kkjiHYA6--set liblapack.so.3gf /usr/lib/lapack/liblapack.so.3gf
+- name: code sandbox | Use liblapac for 3gf (Ubuntu 14)
+  command: update-alternatives --set liblapack.so.3 /usr/lib/lapack/liblapack.so.3
   when: so3.stat.exists == True
 
 - name: code sandbox | Create edxapp sandbox user
