@@ -61,6 +61,8 @@
     name: '' 
     host: "{{ item }}" 
     state: absent
+    login_user: "{{ MYSQL_ADMIN_USER }}"
+    login_password: "{{ MYSQL_ADMIN_PASSWORD }}"
   with_items:
     - localhost
     - "{{ ansible_hostname }}"
