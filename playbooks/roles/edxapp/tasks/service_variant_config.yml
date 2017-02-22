@@ -115,17 +115,15 @@
     - install:configuration
 
 # migrate when the migrate user is overridden in extra vars
-- hosts: "{{ EDXAPP_MYSQL_HOST }}"
-  tasks:
-    - name: migrate
-      command: "{{ COMMON_BIN_DIR }}/edxapp-migrate-{{ item }}"
-      when: migrate_db is defined and migrate_db|lower == "yes" and COMMON_MYSQL_MIGRATE_PASS and item != "lms-preview"
-      environment:
-        DB_MIGRATION_USER: "{{ COMMON_MYSQL_MIGRATE_USER }}"
-        DB_MIGRATION_PASS: "{{ COMMON_MYSQL_MIGRATE_PASS }}"
-      with_items: "{{ service_variants_enabled }}"
-      tags:
-        - migrate
+- name: migrate
+  command: "{{ COMMON_BIN_DIR }}/edxapp-migrate-{{ item }}"
+  when: migrate_db is defined and migrate_db|lower == "yes" and COMMON_MYSQL_MIGRATE_PASS and item != "lms-preview"
+  environment:
+    DB_MIGRATION_USER: "{{ COMMON_MYSQL_MIGRATE_USER }}"
+    DB_MIGRATION_PASS: "{{ COMMON_MYSQL_MIGRATE_PASS }}"
+  with_items: "{{ service_variants_enabled }}"
+  tags:
+    - migrate
 
 # There are problems with django collectstatic copying files.  It doesn't retain
 # last modified timestamps, but relies on those same timestamps to know if a new file
